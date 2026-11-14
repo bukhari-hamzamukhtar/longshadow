@@ -1,0 +1,7 @@
+node_modules/
+dist/
+data_raw/
+.vercel/
+*.log
+__pycache__/
+.DS_Store
