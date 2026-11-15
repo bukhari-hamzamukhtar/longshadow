@@ -4,7 +4,7 @@
 
 Built for the NASA Space Apps Challenge 2026, challenge "Lunar Landing Site Navigator".
 
-Live app: LIVE_URL
+Live app: https://bukhari-hamzamukhtar.github.io/longshadow/
 
 ## What you can do with it
 
