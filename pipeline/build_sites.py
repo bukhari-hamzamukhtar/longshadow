@@ -56,7 +56,7 @@ FIXED = [
     ("south-pole", "Lunar South Pole", "Reference points", -89.9999, 0.0, "The pole itself. It sits on the inner wall of Shackleton crater.", "Geometric pole of the ME frame"),
     ("im2-athena", "IM-2 Athena", "Polar landings and impacts", -84.7906, 29.1957, "Intuitive Machines IM-2 lander, March 2025, on Mons Mouton.", "LROC landing site coordinates"),
     ("im1-odysseus", "IM-1 Odysseus", "Polar landings and impacts", -80.13, 1.44, "Intuitive Machines IM-1 lander, February 2024, near Malapert A.", "NASA / LROC landing site coordinates"),
-    ("lcross", "LCROSS impact (Cabeus)", "Polar landings and impacts", -84.675, -48.725, "Where LCROSS hit a permanently shadowed crater in 2009 and found water.", "NASA LCROSS impact coordinates"),
+    ("lcross", "LCROSS impact (Cabeus)", "Polar landings and impacts", -84.6796, -48.7093, "Where LCROSS hit a permanently shadowed crater in 2009 and found water.", "Measured Centaur impact location, Marshall et al. 2012 (arXiv:1103.1687)"),
     ("chandrayaan-3", "Chandrayaan-3", "Polar landings and impacts", -69.373, 32.319, "ISRO Vikram lander, August 2023 (Shiv Shakti point).", "ISRO landing coordinates"),
     ("apollo-11", "Apollo 11", "Apollo", 0.6742, 23.4731, "Tranquility Base, July 1969.", "LROC NAC coordinates (Wagner et al. 2017)"),
     ("apollo-12", "Apollo 12", "Apollo", -3.0128, -23.4219, "Ocean of Storms, November 1969.", "LROC NAC coordinates (Wagner et al. 2017)"),
@@ -216,6 +216,8 @@ def main():
         sites.append(entry)
 
     tiles = {}
+    found_f = f"{raw}/cache/site_search.json"  # delete this file to run the search again
+    found = json.load(open(found_f)) if os.path.exists(found_f) else {}
     for tile_name, sid, name, short24, note in REGIONS:
         path = f"{raw}/site5m/{tile_name}.tif"
         if not os.path.exists(path):
@@ -225,8 +227,13 @@ def main():
         tile = open_site_tif(path)
         S5 = Source(tile, 6)
         tiles[tile_name] = S5
-        lat, lon, slope, off, ncand = find_best_site(tile, [S5, S80, S60], sun3)
-        print(f"  search {tile_name}: {ncand} candidates, slope {slope:.1f} deg, {off:.2f} km from centre, {time.time() - t0:.0f}s", flush=True)
+        if tile_name in found:  # the search takes a minute per region, so its result is kept
+            lat, lon, slope, off = found[tile_name]
+        else:
+            lat, lon, slope, off, ncand = find_best_site(tile, [S5, S80, S60], sun3)
+            found[tile_name] = [lat, lon, slope, off]
+            json.dump(found, open(found_f, "w"), indent=1)
+            print(f"  search {tile_name}: {ncand} candidates, slope {slope:.1f} deg, {off:.2f} km from centre, {time.time() - t0:.0f}s", flush=True)
         add_site(sid, name, A3, lat, lon, note,
                  f"Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile {tile_name}",
                  "lola5", [S5, S80, S60], {"artemis2024": short24, "tile": tile_name, "slope_deg": round(slope, 1), "offset_km": round(off, 2)})

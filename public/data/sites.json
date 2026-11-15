@@ -142,7 +142,7 @@
    "horizon": "horizons/de-gerlache-rim-1.bin",
    "stats2027": {
     "2": {
-     "sun_avg": 79.1,
+     "sun_avg": 79.0,
      "sun_any": 81.6,
      "longest_dark_d": 11.3,
      "longest_lit_d": 143.9,
@@ -170,7 +170,7 @@
    "tile": "SL2",
    "slope_deg": 9.9,
    "offset_km": 5.91,
-   "elev_m": 1500.8,
+   "elev_m": 1500.7,
    "masts": [
     2.0,
     10.0
@@ -218,7 +218,7 @@
     "2": {
      "sun_avg": 76.5,
      "sun_any": 80.5,
-     "longest_dark_d": 7.1,
+     "longest_dark_d": 7.2,
      "longest_lit_d": 88.0,
      "earth_up": 49.9
     },
@@ -290,7 +290,7 @@
    "horizon": "horizons/haworth.bin",
    "stats2027": {
     "2": {
-     "sun_avg": 59.7,
+     "sun_avg": 59.6,
      "sun_any": 65.0,
      "longest_dark_d": 17.5,
      "longest_lit_d": 59.0,
@@ -328,7 +328,7 @@
    "stats2027": {
     "2": {
      "sun_avg": 73.6,
-     "sun_any": 78.5,
+     "sun_any": 78.4,
      "longest_dark_d": 11.3,
      "longest_lit_d": 87.8,
      "earth_up": 80.7
@@ -466,7 +466,7 @@
    "tile": "DM1",
    "slope_deg": 5.0,
    "offset_km": 5.75,
-   "elev_m": 829.2,
+   "elev_m": 829.1,
    "masts": [
     2.0,
     10.0
@@ -630,12 +630,12 @@
    "id": "lcross",
    "name": "LCROSS impact (Cabeus)",
    "group": "Polar landings and impacts",
-   "lat": -84.675,
-   "lon": -48.725,
+   "lat": -84.6796,
+   "lon": -48.7093,
    "note": "Where LCROSS hit a permanently shadowed crater in 2009 and found water.",
-   "source": "NASA LCROSS impact coordinates",
+   "source": "Measured Centaur impact location, Marshall et al. 2012 (arXiv:1103.1687)",
    "tier": "lola20",
-   "elev_m": -3828.2,
+   "elev_m": -3833.4,
    "masts": [
     2.0,
     10.0
@@ -648,14 +648,14 @@
      "sun_any": 0.0,
      "longest_dark_d": 365.0,
      "longest_lit_d": 0.0,
-     "earth_up": 15.4
+     "earth_up": 15.0
     },
     "10": {
      "sun_avg": 0.0,
      "sun_any": 0.0,
      "longest_dark_d": 365.0,
      "longest_lit_d": 0.0,
-     "earth_up": 15.5
+     "earth_up": 15.2
     }
    }
   },
