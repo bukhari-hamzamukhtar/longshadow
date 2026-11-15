@@ -44,19 +44,22 @@ export async function loadSites(base = "/data"): Promise<Site[]> {
   }));
 }
 
-const pending = new Map<string, Promise<void>>();
+const pending = new WeakMap<Site, Promise<void>>();
 
 /** Fetch the horizon of a site once. Sphere-tier sites have none. */
 export function ensureHorizon(site: Site): Promise<void> {
   if (site.profiles || !site.horizonUrl) return Promise.resolve();
-  let p = pending.get(site.id);
+  let p = pending.get(site);
   if (!p) {
     p = fetch(site.horizonUrl)
-      .then((r) => r.arrayBuffer())
+      .then((r) => {
+        if (!r.ok) throw new Error(`horizon ${site.id}: HTTP ${r.status}`);
+        return r.arrayBuffer();
+      })
       .then((buf) => {
         site.profiles = parseHorizon(buf, 1440, site.masts.length);
       });
-    pending.set(site.id, p);
+    pending.set(site, p);
   }
   return p;
 }
