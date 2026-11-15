@@ -130,24 +130,26 @@ def pool2(a, mode):
 
 
 class Source:
-    """A DEM plus a max-pooled pyramid. levels[0] is the true surface.
+    """A DEM plus a mean-pooled pyramid. levels[0] is the full resolution grid.
 
-    Coarse levels hold the highest point of every cell, so a far ray that
-    samples one cell cannot miss a peak inside it.
+    A ray sample asks for a cell size no larger than its own step, so close
+    terrain is read at full resolution and far terrain from a level that is
+    already averaged to the sampling scale (no aliasing, no bias).
     """
 
     def __init__(self, base, levels, cache=None):
         self.levels = [base]
         cur = base
         for _ in range(levels):
-            f = None if cache is None else f"{cache}_{int(cur.s * 2)}m.npy"
+            if min(cur.nr, cur.nc) < 16:
+                break
+            f = None if cache is None else f"{cache}_mean_{int(cur.s * 2)}m.npy"
             if f and os.path.exists(f):
                 nxt = np.load(f, mmap_mode="r")
             else:
-                import warnings
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    nxt = pool2(cur.a, "max")
+                nxt = pool2(cur.a, "mean")
+                if np.issubdtype(cur.a.dtype, np.integer):
+                    nxt = np.rint(nxt).astype(cur.a.dtype)
                 if f:
                     os.makedirs(os.path.dirname(f), exist_ok=True)
                     np.save(f, nxt)
@@ -159,13 +161,13 @@ class Source:
         return self.levels[0].inside(x, y)
 
     def sample(self, s_req, x, y):
-        base = self.levels[0]
-        if s_req <= base.s:
-            return base.bilinear(x, y)
-        for g in self.levels[1:]:
-            if g.s >= s_req:
-                return g.nearest(x, y)
-        return self.levels[-1].nearest(x, y)
+        g = self.levels[0]
+        for lv in self.levels[1:]:
+            if lv.s <= s_req:
+                g = lv
+            else:
+                break
+        return g.bilinear(x, y)
 
 
 def heights(sources, s_req, x, y):
@@ -182,12 +184,13 @@ def heights(sources, s_req, x, y):
 BANDS_KM = [0.0, 0.3, 1.5, 6.0, 25.0, 90.0, 1e9]
 
 
-def horizon_profile(lat, lon, masts, sources, az_n=1440, d_max=500e3, base_px=5.0, layers=True):
+def horizon_profile(lat, lon, masts, sources, az_n=1440, d_max=500e3, base_px=5.0, k_step=1.0 / 600.0, layers=True):
     """Terrain horizon seen from a site, for one or more heights above ground.
 
-    Rays leave the site along great circles. The sample spacing grows with
-    distance so that the DEM cell size always matches the gap between
-    neighbouring rays. Elevation uses exact spherical geometry.
+    Rays leave the site along great circles, one per azimuth. Along a ray the
+    step is half a base pixel near the site and then grows with distance
+    (step = distance * k_step), and every sample reads a DEM level whose cell
+    is no larger than the step. Elevation uses exact spherical geometry.
 
     Returns dict(h0, elev[M, A], dist_km[M, A], layers[M, B, A]).
     """
@@ -205,34 +208,40 @@ def horizon_profile(lat, lon, masts, sources, az_n=1440, d_max=500e3, base_px=5.
     dist = np.zeros((M, az_n))
     nb = len(BANDS_KM) - 1
     lay = np.full((M, nb, az_n), -90.0)
-    daz = 2.0 * np.pi / az_n
-    s, d_lo, first = float(base_px), base_px / 2.0, True
-    while d_lo < d_max:
-        d_hi = min(s / daz, d_max)
-        d = np.arange(d_lo, d_hi, s / 2.0 if first else s)
-        th = d / R_MOON
-        ct, st = np.cos(th), np.sin(th)
-        px = up[0] * ct[None, :] + dirs[:, 0:1] * st[None, :]
-        py = up[1] * ct[None, :] + dirs[:, 1:2] * st[None, :]
-        pz = up[2] * ct[None, :] + dirs[:, 2:3] * st[None, :]
-        x, y = unit_to_xy(px, py, pz)
-        h = heights(sources, s, x, y)
-        rad = R_MOON + h
-        dkm = d / 1000.0
-        for m in range(M):
-            el = np.degrees(np.arctan2(rad * ct[None, :] - ro[m], rad * st[None, :]))
-            el = np.where(np.isnan(el), -90.0, el)
-            j = el.argmax(axis=1)
-            best = el[np.arange(az_n), j]
-            upd = best > elev[m]
-            elev[m, upd] = best[upd]
-            dist[m, upd] = dkm[j[upd]]
-            if layers:
-                for b in range(nb):
-                    sel = (dkm >= BANDS_KM[b]) & (dkm < BANDS_KM[b + 1])
-                    if sel.any():
-                        lay[m, b] = np.maximum(lay[m, b], el[:, sel].max(axis=1))
-        d_lo, s, first = d_hi, s * 2.0, False
+    dl, cur = [], base_px / 2.0
+    while cur < d_max:
+        dl.append(cur)
+        cur += max(base_px / 2.0, cur * k_step)
+    d_all = np.array(dl)
+    step_all = np.maximum(base_px / 2.0, d_all * k_step)
+    lvl = np.floor(np.log2(step_all / (base_px / 2.0)) + 1e-9).astype(int)
+    for j in np.unique(lvl):
+        idx = np.nonzero(lvl == j)[0]
+        s_req = (base_px / 2.0) * 2.0 ** j
+        for c0 in range(0, len(idx), 500):
+            d = d_all[idx[c0:c0 + 500]]
+            th = d / R_MOON
+            ct, st = np.cos(th), np.sin(th)
+            px = up[0] * ct[None, :] + dirs[:, 0:1] * st[None, :]
+            py = up[1] * ct[None, :] + dirs[:, 1:2] * st[None, :]
+            pz = up[2] * ct[None, :] + dirs[:, 2:3] * st[None, :]
+            x, y = unit_to_xy(px, py, pz)
+            h = heights(sources, s_req, x, y)
+            rad = R_MOON + h
+            dkm = d / 1000.0
+            for m in range(M):
+                el = np.degrees(np.arctan2(rad * ct[None, :] - ro[m], rad * st[None, :]))
+                el = np.where(np.isnan(el), -90.0, el)
+                jmax = el.argmax(axis=1)
+                best = el[np.arange(az_n), jmax]
+                upd = best > elev[m]
+                elev[m, upd] = best[upd]
+                dist[m, upd] = dkm[jmax[upd]]
+                if layers:
+                    for b in range(nb):
+                        sel = (dkm >= BANDS_KM[b]) & (dkm < BANDS_KM[b + 1])
+                        if sel.any():
+                            lay[m, b] = np.maximum(lay[m, b], el[:, sel].max(axis=1))
     return {"h0": h0, "elev": elev, "dist_km": dist, "layers": lay}
 
 

@@ -1,0 +1,190 @@
+{
+ "reference": "Barker et al. 2021, Planet. Space Sci. 203, Table 2 (Site 1, 2024-01-01 to 2026-01-01, hourly)",
+ "note": "Ours: one point (RoI centroid) on the nominal 5 m DEM. Barker A: RoI average, C: best pixel per hour, both 1st percentile of 100 DEM clones.",
+ "inside": 14,
+ "total": 14,
+ "rows": [
+  {
+   "roi": 1,
+   "lat": -89.4389,
+   "lon": 222.904,
+   "elev_m": 1958.3,
+   "z1m": {
+    "avg": 80.81,
+    "lcip_d": 198.4,
+    "lcsp_d": 12.0,
+    "barker_avg_A": 68.03,
+    "barker_avg_C": 85.84,
+    "within_A_C": true,
+    "barker_lcip_A": 63.35,
+    "barker_lcip_C": 205.38,
+    "barker_lcsp_A": 16.55,
+    "barker_lcsp_C": 10.46
+   },
+   "z5m": {
+    "avg": 91.19,
+    "lcip_d": 232.4,
+    "lcsp_d": 4.0,
+    "barker_avg_A": 89.26,
+    "barker_avg_C": 91.83,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 2,
+   "lat": -89.4387,
+   "lon": 222.452,
+   "elev_m": 1958.1,
+   "z1m": {
+    "avg": 79.57,
+    "lcip_d": 198.1,
+    "lcsp_d": 13.7,
+    "barker_avg_A": 70.32,
+    "barker_avg_C": 85.75,
+    "within_A_C": true,
+    "barker_lcip_A": 113.8,
+    "barker_lcip_C": 205.08,
+    "barker_lcsp_A": 17.84,
+    "barker_lcsp_C": 10.71
+   },
+   "z5m": {
+    "avg": 90.42,
+    "lcip_d": 233.0,
+    "lcsp_d": 5.3,
+    "barker_avg_A": 88.51,
+    "barker_avg_C": 91.24,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 3,
+   "lat": -89.4431,
+   "lon": 222.24,
+   "elev_m": 1956.4,
+   "z1m": {
+    "avg": 74.38,
+    "lcip_d": 169.6,
+    "lcsp_d": 16.1,
+    "barker_avg_A": 67.51,
+    "barker_avg_C": 77.31,
+    "within_A_C": true,
+    "barker_lcip_A": 117.86,
+    "barker_lcip_C": 176.8,
+    "barker_lcsp_A": 22.23,
+    "barker_lcsp_C": 15.79
+   },
+   "z5m": {
+    "avg": 87.02,
+    "lcip_d": 233.0,
+    "lcsp_d": 6.1,
+    "barker_avg_A": 84.53,
+    "barker_avg_C": 89.78,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 4,
+   "lat": -89.4527,
+   "lon": 222.851,
+   "elev_m": 1956.4,
+   "z1m": {
+    "avg": 82.38,
+    "lcip_d": 218.2,
+    "lcsp_d": 6.9,
+    "barker_avg_A": 69.61,
+    "barker_avg_C": 86.81,
+    "within_A_C": true,
+    "barker_lcip_A": 136.49,
+    "barker_lcip_C": 232.5,
+    "barker_lcsp_A": 13.27,
+    "barker_lcsp_C": 4.58
+   },
+   "z5m": {
+    "avg": 88.84,
+    "lcip_d": 233.4,
+    "lcsp_d": 3.8,
+    "barker_avg_A": 88.12,
+    "barker_avg_C": 91.11,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 5,
+   "lat": -89.4623,
+   "lon": 222.912,
+   "elev_m": 1950.9,
+   "z1m": {
+    "avg": 78.22,
+    "lcip_d": 176.2,
+    "lcsp_d": 8.5,
+    "barker_avg_A": 70.38,
+    "barker_avg_C": 84.47,
+    "within_A_C": true,
+    "barker_lcip_A": 142.17,
+    "barker_lcip_C": 193.4,
+    "barker_lcsp_A": 15.24,
+    "barker_lcsp_C": 4.96
+   },
+   "z5m": {
+    "avg": 86.73,
+    "lcip_d": 220.5,
+    "lcsp_d": 4.0,
+    "barker_avg_A": 85.71,
+    "barker_avg_C": 88.38,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 6,
+   "lat": -89.4739,
+   "lon": 222.625,
+   "elev_m": 1948.4,
+   "z1m": {
+    "avg": 84.7,
+    "lcip_d": 205.4,
+    "lcsp_d": 5.2,
+    "barker_avg_A": 71.15,
+    "barker_avg_C": 86.74,
+    "within_A_C": true,
+    "barker_lcip_A": 81.01,
+    "barker_lcip_C": 205.8,
+    "barker_lcsp_A": 12.74,
+    "barker_lcsp_C": 4.71
+   },
+   "z5m": {
+    "avg": 87.97,
+    "lcip_d": 221.3,
+    "lcsp_d": 3.6,
+    "barker_avg_A": 87.35,
+    "barker_avg_C": 89.05,
+    "within_A_C": true
+   }
+  },
+  {
+   "roi": 7,
+   "lat": -89.4912,
+   "lon": 221.519,
+   "elev_m": 1928.7,
+   "z1m": {
+    "avg": 76.2,
+    "lcip_d": 116.9,
+    "lcsp_d": 6.1,
+    "barker_avg_A": 67.36,
+    "barker_avg_C": 83.44,
+    "within_A_C": true,
+    "barker_lcip_A": 100.23,
+    "barker_lcip_C": 117.71,
+    "barker_lcsp_A": 14.54,
+    "barker_lcsp_C": 5.04
+   },
+   "z5m": {
+    "avg": 83.14,
+    "lcip_d": 145.9,
+    "lcsp_d": 5.2,
+    "barker_avg_A": 82.79,
+    "barker_avg_C": 84.98,
+    "within_A_C": true
+   }
+  }
+ ]
+}
