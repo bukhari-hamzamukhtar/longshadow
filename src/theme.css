@@ -12,8 +12,6 @@
   --earth: #2a5fc4;
 }
 :root[data-theme="light"] .top { background: rgba(247, 246, 242, 0.88); }
-:root[data-theme="light"] .story p { color: #2b3038; }
-:root[data-theme="light"] .story p + p { color: var(--mut); }
 :root[data-theme="light"] .doc .lead { color: #2b3038; }
 :root[data-theme="light"] .strip.wait { background: repeating-linear-gradient(90deg, #e9e7e1 0 6px, #f1efe9 6px 12px); }
 :root[data-theme="light"] .site .nm em { color: var(--mut); }
@@ -121,4 +119,85 @@ h1 em, h2 em { font-family: "Instrument Serif", "Times New Roman", serif; font-s
 @supports (animation-timeline: view()) {
   .doc h2, .doc .tbl, .limits li, .defs > div, .checks, .how h2 { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
 }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ================= round 3: colour, blended sections, control row ================= */
+:root { --page: var(--bg); }
+.top.clear, :root[data-theme="light"] .top.clear { background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent); border-color: transparent; }
+.top .right > span { display: none; }
+.cmp-head h1 em, .doc h1 em { color: var(--sun); }
+
+/* navigator */
+.stage { grid-template-rows: minmax(0, 1.25fr) auto minmax(170px, 0.75fr); }
+.stage .controls { border-top: 1px solid var(--line); border-bottom: 0; background: var(--bg); position: relative; z-index: 5; }
+.controls .play { background: var(--sun); border-color: var(--sun); color: #14110a; font-weight: 600; min-width: 96px; }
+:root[data-theme="light"] .controls .play { color: #fff; }
+:root[data-theme="light"] .controls .dt { color-scheme: light; }
+@media (max-width: 1180px) {
+  .nav { display: flex; flex-direction: column; }
+  .stage { order: 1; } .bar { order: 2; } .sites { order: 3; max-height: 340px; } .read { order: 4; }
+  .moon { height: 62vh; } .pano { height: 220px; }
+}
+
+/* landing: each story is a coloured night band, the picture fades into it */
+.story {
+  position: relative; overflow: hidden; max-width: none; margin: 0; border: 0 !important;
+  padding-left: max(clamp(20px, 5vw, 92px), calc((100vw - 1400px) / 2)); padding-right: max(clamp(20px, 5vw, 92px), calc((100vw - 1400px) / 2));
+  --bg: #070b16; --bg2: #0e1526; --line: #1c2438; --line2: #2b3550; --ink: #f2efe8; --mut: #b4bacb; --dim: #7c8499; --sun: #ffb224; --earth: #8fb4ff;
+  color: var(--ink);
+  background: radial-gradient(60vw 520px at 76% 50%, rgba(255, 170, 40, 0.24), transparent 70%), linear-gradient(180deg, #08090a 0%, #0b1022 100%);
+}
+.story ~ .story { background: radial-gradient(60vw 560px at 24% 50%, rgba(64, 128, 255, 0.3), transparent 70%), linear-gradient(180deg, #0b1022 0%, #0a1536 100%); }
+.story ~ .story ~ .story { padding-bottom: 260px; background: radial-gradient(55vw 520px at 76% 40%, rgba(170, 96, 255, 0.26), transparent 70%), radial-gradient(40vw 400px at 8% 70%, rgba(255, 170, 40, 0.14), transparent 70%), linear-gradient(180deg, #0a1536 0%, #150f2b 70%, var(--page) 100%); }
+.story::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border: 0; width: auto; height: auto;
+  background-image: radial-gradient(1.4px 1.4px at 6% 14%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 17% 62%, #fff 50%, transparent 52%), radial-gradient(1.6px 1.6px at 29% 28%, #fff 50%, transparent 52%), radial-gradient(1.1px 1.1px at 38% 8%, #fff 50%, transparent 52%), radial-gradient(1.4px 1.4px at 47% 76%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 58% 18%, #fff 50%, transparent 52%), radial-gradient(1.7px 1.7px at 66% 88%, #fff 50%, transparent 52%), radial-gradient(1.1px 1.1px at 74% 10%, #fff 50%, transparent 52%), radial-gradient(1.4px 1.4px at 83% 70%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 91% 24%, #fff 50%, transparent 52%), radial-gradient(1.5px 1.5px at 96% 56%, #fff 50%, transparent 52%), radial-gradient(1.1px 1.1px at 12% 90%, #fff 50%, transparent 52%);
+  animation: twinkle 4.5s ease-in-out infinite alternate;
+}
+@keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.85; } }
+@keyframes float { from { transform: translateY(-9px); } to { transform: translateY(9px); } }
+.story > * { position: relative; z-index: 1; }
+.story p { color: #e3e6ef; } .story p + p { color: var(--mut); }
+.story .kicker { color: var(--sun); } .story ~ .story .kicker { color: var(--earth); } .story ~ .story ~ .story .kicker { color: #c9a2ff; }
+.story h2 em, .end h2 em, .how h2 em { background: linear-gradient(90deg, #ffc35a, #ff8a3c); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: 0.12em; }
+.story ~ .story h2 em { background-image: linear-gradient(90deg, #9cc2ff, #5b8cff); }
+.story ~ .story ~ .story h2 em { background-image: linear-gradient(90deg, #d7b6ff, #ff8fc7); }
+.story-frame { border: 0 !important; background: transparent !important; animation: float 7s ease-in-out infinite alternate; }
+.story-frame:not(.pad) * { border-color: transparent !important; }
+.story-frame:not(.pad) { -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent); mask-composite: intersect; }
+.story-frame.pad { background: rgba(255, 255, 255, 0.055) !important; border-radius: 22px; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.how, .end, .checks, .steps { border: 0 !important; }
+.how { background: none; }
+.steps { gap: 16px; }
+.steps > div { border: 0 !important; border-radius: 22px; padding: 26px 24px 28px; background: color-mix(in srgb, var(--sun) 11%, var(--bg2)); }
+.steps > div:nth-child(2) { background: color-mix(in srgb, var(--earth) 13%, var(--bg2)); }
+.steps > div:nth-child(3) { background: color-mix(in srgb, #9a63f5 13%, var(--bg2)); }
+.steps > div:nth-child(4) { background: color-mix(in srgb, #17a884 13%, var(--bg2)); }
+.steps > div i { font-family: "Instrument Serif", serif; font-style: italic; font-size: 48px; line-height: 1; display: block; margin-bottom: 14px; color: var(--sun); }
+.steps > div:nth-child(2) i { color: var(--earth); } .steps > div:nth-child(3) i { color: #9a63f5; } .steps > div:nth-child(4) i { color: #17a884; }
+.checks { background: var(--bg2); border-radius: 24px; padding: 30px 32px; }
+.checks b { background: linear-gradient(90deg, var(--sun), #ff6f4a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.checks > div + div b { background-image: linear-gradient(90deg, var(--earth), #9a63f5); }
+.end { background: radial-gradient(60vw 420px at 50% 100%, color-mix(in srgb, var(--sun) 24%, transparent), transparent 70%); }
+
+/* method: colour blocks, no hairlines */
+.doc h2 { border-top: 0 !important; padding-top: 0; margin-top: 96px; }
+.doc h2::before { display: table; background: var(--sun); color: var(--page); padding: 4px 11px; border-radius: 99px; margin-bottom: 16px; }
+.stats { border: 0; gap: 14px; }
+.stats > div { border: 0 !important; border-radius: 22px; background: color-mix(in srgb, var(--earth) 14%, var(--bg2)); }
+.stats > div:first-child { background: linear-gradient(135deg, #ffbe3d, #ff7a3c); color: #1a1205; }
+.stats > div:nth-child(3) { background: color-mix(in srgb, #9a63f5 14%, var(--bg2)); }
+.stats > div:nth-child(4) { background: color-mix(in srgb, #17a884 14%, var(--bg2)); }
+.defs { border: 0; gap: 14px; }
+.defs > div { border: 0 !important; border-radius: 22px; background: var(--bg2); }
+.defs > div:hover { background: color-mix(in srgb, var(--sun) 10%, var(--bg2)); }
+.defs > div:nth-child(2)::before, .defs > div:nth-child(5)::before { color: var(--earth); }
+.defs > div:nth-child(3)::before, .defs > div:nth-child(6)::before { color: #9a63f5; }
+.limits li { border: 0 !important; border-radius: 18px; background: color-mix(in srgb, var(--sun) 9%, var(--bg2)); }
+.limits li:nth-child(even) { background: color-mix(in srgb, var(--earth) 10%, var(--bg2)); }
+.tbl { border-collapse: separate; border-spacing: 0; background: var(--bg2); border-radius: 20px; overflow: hidden; }
+.tbl th, .tbl td { padding-left: 18px; border-bottom-color: transparent; }
+.tbl thead th { color: var(--sun); padding-top: 16px; }
+.tbl tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+.tbl tfoot td { padding-bottom: 16px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

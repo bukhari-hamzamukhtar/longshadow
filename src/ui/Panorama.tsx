@@ -114,6 +114,7 @@ export function Panorama({ site, mastIdx, t, story = false, face }: { site: Site
       force((k) => k + 1);
     };
     const wheel = (e: WheelEvent) => {
+      if (window.innerWidth <= 1180 && !e.ctrlKey) return;
       e.preventDefault();
       view.current.span = Math.min(360, Math.max(4, view.current.eff * Math.exp(e.deltaY * 0.0015)));
       force((k) => k + 1);

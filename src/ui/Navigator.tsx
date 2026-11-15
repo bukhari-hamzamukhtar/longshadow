@@ -190,12 +190,8 @@ export function Navigator() {
       <SiteList />
       <main className="stage">
         <MoonView />
-        <Panorama site={site} mastIdx={mi} t={t} />
-      </main>
-      <Readout site={site} win={win} />
-      <div className="bar">
         <div className="controls">
-          <button className="btn play" onClick={() => set({ playing: !playing })}>{playing ? "Pause" : "Play"}</button>
+          <button className="btn play" onClick={() => set({ playing: !playing })}>{playing ? "❚❚ Pause" : "▶ Play"}</button>
           <div className="seg">
             {SPEEDS.map(([l, v]) => (
               <button key={l} className={speed === v ? "on" : ""} onClick={() => set({ speed: v })}>{l}</button>
@@ -212,7 +208,7 @@ export function Navigator() {
             ))}
           </div>
           <details className="more">
-            <summary>Mission settings</summary>
+            <summary>⚙ Settings</summary>
             <div className="more-body">
           <label className="lbl">Mast height</label>
           <div className="seg">
@@ -241,6 +237,10 @@ export function Navigator() {
             </div>
           </details>
         </div>
+        <Panorama site={site} mastIdx={mi} t={t} />
+      </main>
+      <Readout site={site} win={win} />
+      <div className="bar">
         <Timeline win={win} t={t} mission={mission} onScrub={onScrub} />
       </div>
     </div>
