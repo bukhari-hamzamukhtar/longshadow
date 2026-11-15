@@ -10,6 +10,7 @@ const YEAR = 365 * DAY;
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function Strip({ scan, from, t, onPick }: { scan: Scan; from: number; t: number; onPick: (t: number) => void }) {
+  const theme = useApp((st) => st.theme);
   const ref = useRef<HTMLCanvasElement>(null);
   const [w, setW] = useState(600);
   const [hov, setHov] = useState<number | null>(null);
@@ -36,9 +37,10 @@ function Strip({ scan, from, t, onPick }: { scan: Scan; from: number; t: number;
         sc += scan.score[i];
       }
       const c = i1 - i0;
-      if (ok * 2 >= c) ctx.fillStyle = "#eceae4";
+      const light = theme === "light";
+      if (ok * 2 >= c) ctx.fillStyle = light ? "#11141a" : "#eceae4";
       else {
-        const v = Math.round(18 + (sc / c) * 46);
+        const v = light ? Math.round(232 - (sc / c) * 44) : Math.round(18 + (sc / c) * 46);
         ctx.fillStyle = `rgb(${v},${v + 1},${v + 4})`;
       }
       ctx.fillRect(x, 4, 1, H - 8);
@@ -52,9 +54,9 @@ function Strip({ scan, from, t, onPick }: { scan: Scan; from: number; t: number;
       ctx.lineTo(x, H);
       ctx.stroke();
     };
-    mark(t, "#ffb224");
-    if (hov !== null) mark(hov, "rgba(255,255,255,0.6)");
-  }, [scan, w, from, t, hov]);
+    mark(t, theme === "light" ? "#d98600" : "#ffb224");
+    if (hov !== null) mark(hov, theme === "light" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.6)");
+  }, [scan, w, from, t, hov, theme]);
   const at = (e: React.MouseEvent) => {
     const r = ref.current!.getBoundingClientRect();
     return from + Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)) * YEAR;
@@ -164,16 +166,20 @@ export function Compare() {
   return (
     <div className="cmp-page">
       <header className="cmp-head">
-        <h1>Which site still works if the landing date slips?</h1>
+        <h1>Which site still works if the landing date <em>slips?</em></h1>
         <p>
-          Set what the mission needs. Each bar is one year of possible landing dates. A light stretch means a landing on that day meets every
-          requirement for the whole stay.
+          Set what the mission needs. Each bar is one year of possible landing dates. A solid block means a landing on that day meets every
+          requirement for the whole stay. Click a bar to pick a date.
         </p>
       </header>
       <div className="cmp-mission">
+        <div className="grp sun"><i>Stay and power</i><div>
         <Choice label="Surface stay" value={mission.durationD} options={[[6, "6 d"], [10, "10 d"], [14, "14 d"], [30, "30 d"]]} onChange={(v) => setM({ durationD: v })} />
         <Choice label="Survives without power" value={mission.maxDarkH} options={[[6, "6 h"], [12, "12 h"], [24, "24 h"], [72, "3 d"], [150, "6 d"]]} onChange={(v) => setM({ maxDarkH: v })} />
         <Choice label="Power at least" value={mission.minPowerPct} options={[[0.5, "50%"], [0.7, "70%"], [0.8, "80%"], [0.9, "90%"]]} onChange={(v) => setM({ minPowerPct: v })} />
+        <Choice label="Mast height" value={mastIdx} options={[[0, "2 m"], [1, "10 m"]]} onChange={(v) => set({ mastIdx: v })} />
+        </div></div>
+        <div className="grp earth"><i>Link to Earth</i><div>
         <Choice label="Direct link to Earth" value={mission.needComm} options={[[true, "Needed"], [false, "Not needed"]]} onChange={(v) => setM({ needComm: v })} />
         {mission.needComm && (
           <>
@@ -181,7 +187,7 @@ export function Compare() {
             <Choice label="Longest outage" value={mission.maxOutageH} options={[[12, "12 h"], [24, "24 h"], [72, "3 d"], [240, "10 d"]]} onChange={(v) => setM({ maxOutageH: v })} />
           </>
         )}
-        <Choice label="Mast height" value={mastIdx} options={[[0, "2 m"], [1, "10 m"]]} onChange={(v) => set({ mastIdx: v })} />
+        </div></div>
       </div>
       <div className="cmp-verdict">
         <span className="num">{fmtDay(tRef, true)}</span>

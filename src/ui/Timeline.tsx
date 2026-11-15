@@ -2,14 +2,16 @@
 import { useEffect, useRef, useState } from "react";
 import { fmtDay } from "../lib/format";
 import { DAY, HOUR, Interval, Mission, SiteWindows } from "../lib/windows";
+import { useApp } from "../store";
 
-const SUN = "#ffb224";
-const EARTH = "#b9cdf5";
+let SUN = "#ffb224";
+let EARTH = "#b9cdf5";
 
 export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null; t: number; mission: Mission; onScrub: (t: number) => void }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 800, h: 150 });
+  const theme = useApp((st) => st.theme);
 
   useEffect(() => {
     const ro = new ResizeObserver(() => {
@@ -31,6 +33,9 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
     const ctx = cv.getContext("2d")!;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
+    const ink = theme === "light" ? "17,20,26" : "255,255,255";
+    SUN = theme === "light" ? "#c47a00" : "#ffb224";
+    EARTH = theme === "light" ? "#2a5fc4" : "#b9cdf5";
     if (!win) return;
     const s = win.series;
     const a = s.t0, b = s.t0 + (s.n - 1) * s.dt;
@@ -52,25 +57,25 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
         const tt = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + k, 1);
         if (tt < a || tt > b) continue;
         const x = Math.round(X(tt)) + 0.5;
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.strokeStyle = `rgba(${ink},0.08)`;
         ctx.beginPath();
         ctx.moveTo(x, 16);
         ctx.lineTo(x, H);
         ctx.stroke();
-        ctx.fillStyle = "rgba(255,255,255,0.45)";
+        ctx.fillStyle = `rgba(${ink},0.45)`;
         ctx.fillText(fmtDay(tt).slice(2), x + 16, 8);
       }
     } else {
       for (let tt = first; tt <= b; tt += DAY) {
         const major = Math.round(tt / DAY) % Math.round(tick / DAY) === 0;
         const x = Math.round(X(tt)) + 0.5;
-        ctx.strokeStyle = major ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)";
+        ctx.strokeStyle = major ? `rgba(${ink},0.08)` : `rgba(${ink},0.03)`;
         ctx.beginPath();
         ctx.moveTo(x, 16);
         ctx.lineTo(x, H);
         ctx.stroke();
         if (major) {
-          ctx.fillStyle = "rgba(255,255,255,0.45)";
+          ctx.fillStyle = `rgba(${ink},0.45)`;
           ctx.fillText(fmtDay(tt), x, 8);
         }
       }
@@ -83,7 +88,7 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
       ctx.fillStyle = color;
       ctx.font = '500 11px "Geist", system-ui, sans-serif';
       ctx.fillText(txt, 0, y + 8);
-      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      ctx.fillStyle = `rgba(${ink},0.4)`;
       ctx.font = '10px "Geist Mono", ui-monospace, monospace';
       ctx.fillText(sub, 0, y + 22);
     };
@@ -108,7 +113,7 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
       ctx.lineWidth = 1;
       ctx.stroke();
     };
-    area(s.sunFrac, y1, laneH - 8, 0, 1, "rgba(255,178,36,0.20)", "rgba(255,178,36,0.75)");
+    area(s.sunFrac, y1, laneH - 8, 0, 1, theme === "light" ? "rgba(196,122,0,0.22)" : "rgba(255,178,36,0.20)", theme === "light" ? "rgba(196,122,0,0.9)" : "rgba(255,178,36,0.75)");
     // Earth: centre height above the local skyline, clipped to a readable range
     const eLo = -4, eHi = 8;
     const zeroY = y2 + (laneH - 8) - ((0 - eLo) / (eHi - eLo)) * (laneH - 8);
@@ -116,9 +121,9 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
     ctx.beginPath();
     ctx.rect(L, y2, W - L - Rr, zeroY - y2);
     ctx.clip();
-    area(s.earthMargin, y2, laneH - 8, eLo, eHi, "rgba(185,205,245,0.18)", "rgba(185,205,245,0.75)");
+    area(s.earthMargin, y2, laneH - 8, eLo, eHi, theme === "light" ? "rgba(42,95,196,0.18)" : "rgba(185,205,245,0.18)", theme === "light" ? "rgba(42,95,196,0.9)" : "rgba(185,205,245,0.75)");
     ctx.restore();
-    ctx.strokeStyle = "rgba(255,255,255,0.16)";
+    ctx.strokeStyle = `rgba(${ink},0.16)`;
     ctx.beginPath();
     ctx.moveTo(L, Math.round(zeroY) + 0.5);
     ctx.lineTo(W - Rr, Math.round(zeroY) + 0.5);
@@ -139,21 +144,21 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
     if (t >= a && t <= b) {
       const x = Math.round(X(t)) + 0.5;
       const xe = Math.min(W - Rr, X(t + mission.durationD * DAY));
-      ctx.fillStyle = "rgba(255,255,255,0.045)";
+      ctx.fillStyle = `rgba(${ink},0.045)`;
       ctx.fillRect(x, 16, xe - x, H - 16);
-      ctx.strokeStyle = "rgba(255,255,255,0.25)";
+      ctx.strokeStyle = `rgba(${ink},0.25)`;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
       ctx.moveTo(Math.round(xe) + 0.5, 16);
       ctx.lineTo(Math.round(xe) + 0.5, H);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = `rgb(${ink})`;
       ctx.beginPath();
       ctx.moveTo(x, 12);
       ctx.lineTo(x, H);
       ctx.stroke();
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = `rgb(${ink})`;
       ctx.beginPath();
       ctx.moveTo(x - 4, 12);
       ctx.lineTo(x + 4, 12);
@@ -161,7 +166,7 @@ export function Timeline({ win, t, mission, onScrub }: { win: SiteWindows | null
       ctx.closePath();
       ctx.fill();
     }
-  }, [win, t, size, mission.durationD]);
+  }, [win, t, size, mission.durationD, theme]);
 
   useEffect(() => {
     const cv = ref.current!;
