@@ -7,7 +7,8 @@ NAME="$(git config user.name)"
 MAIL="$(git config user.email)"
 npx tsc --noEmit
 SITE_SUBFOLDER=longshadow npx vite build
-cp dist/index.html dist/404.html   # lets /longshadow/app and other deep links load the app
+cp dist/index.html dist/404.html
+for p in app compare method; do mkdir -p "dist/$p" && cp dist/index.html "dist/$p/index.html"; done   # deep links
 touch dist/.nojekyll
 cd dist
 rm -rf .git
