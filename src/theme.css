@@ -1,0 +1,124 @@
+/* Light mode, the settings menu, display type and motion. Loaded last. */
+
+:root[data-theme="light"] {
+  --bg: #f7f6f2;
+  --bg2: #efede7;
+  --line: #e0ddd5;
+  --line2: #c8c4ba;
+  --ink: #11141a;
+  --mut: #545962;
+  --dim: #858a93;
+  --sun: #b86e00;
+  --earth: #2a5fc4;
+}
+:root[data-theme="light"] .top { background: rgba(247, 246, 242, 0.88); }
+:root[data-theme="light"] .story p { color: #2b3038; }
+:root[data-theme="light"] .story p + p { color: var(--mut); }
+:root[data-theme="light"] .doc .lead { color: #2b3038; }
+:root[data-theme="light"] .strip.wait { background: repeating-linear-gradient(90deg, #e9e7e1 0 6px, #f1efe9 6px 12px); }
+:root[data-theme="light"] .site .nm em { color: var(--mut); }
+
+/* Pictures of space stay dark in both modes, with their own light text */
+.moon, .pano, .story-frame:not(.pad), .hero, .top.clear {
+  --bg: #08090a; --bg2: #0c0d0f; --line: #1d2024; --line2: #2d3137; --ink: #eceae4; --mut: #a7a9ad; --dim: #6d7077;
+  --sun: #ffb224; --earth: #b9cdf5;
+  color: var(--ink);
+}
+.top.clear { background: transparent; }
+:root[data-theme="light"] .moon, :root[data-theme="light"] .pano { border-color: #08090a; }
+
+/* header */
+.top .right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.theme { background: none; border: 1px solid var(--line2); color: var(--ink); padding: 4px 11px; font-size: 12px; font-family: var(--font); cursor: pointer; transition: background 0.15s, color 0.15s; }
+.theme:hover { background: var(--ink); color: var(--bg); }
+
+/* one menu for the rule settings, so the bar stays short */
+.more { position: relative; margin-left: 4px; }
+.more summary { list-style: none; cursor: pointer; border: 1px solid var(--line2); padding: 5px 12px; font-size: 12.5px; line-height: 18px; user-select: none; }
+.more summary::-webkit-details-marker { display: none; }
+.more summary::after { content: "+"; margin-left: 9px; color: var(--dim); }
+.more[open] summary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.more[open] summary::after { content: "\2212"; color: inherit; }
+.more-body {
+  position: absolute; right: 0; bottom: calc(100% + 10px); z-index: 40; background: var(--bg); border: 1px solid var(--line2);
+  padding: 16px 18px; display: grid; grid-template-columns: auto auto; gap: 12px 16px; align-items: center; white-space: nowrap;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28); animation: pop 0.18s ease-out;
+}
+.more-body .lbl { margin: 0; color: var(--mut); }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* display type: one serif italic phrase per headline */
+h1 em, h2 em { font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic; font-weight: 400; letter-spacing: -0.015em; font-size: 1.12em; line-height: 0.9; }
+.cmp-head h1, .doc h1 { font-size: clamp(36px, 4.6vw, 64px); max-width: 980px; }
+.read h2 { font-size: 23px; }
+.plain { font-size: 15px; }
+.plain p:first-child { font-weight: 500; }
+.kv b { font-size: 14px; font-weight: 500; }
+
+/* motion: pages rise in, rows follow one after another */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.cmp-page > *, .doc > * { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.cmp-page > *:nth-child(2), .doc > *:nth-child(2) { animation-delay: 0.06s; }
+.cmp-page > *:nth-child(3), .doc > *:nth-child(3) { animation-delay: 0.12s; }
+.cmp-page > *:nth-child(4), .doc > *:nth-child(4) { animation-delay: 0.18s; }
+.cmp-page > *:nth-child(n + 5), .doc > *:nth-child(n + 5) { animation-delay: 0.24s; }
+.cmp-row { animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both; transition: background 0.15s; }
+.cmp-row:nth-child(2) { animation-delay: 0.05s; } .cmp-row:nth-child(3) { animation-delay: 0.1s; }
+.cmp-row:nth-child(4) { animation-delay: 0.15s; } .cmp-row:nth-child(5) { animation-delay: 0.2s; }
+.cmp-row:nth-child(6) { animation-delay: 0.25s; } .cmp-row:nth-child(7) { animation-delay: 0.3s; }
+.cmp-row:nth-child(8) { animation-delay: 0.35s; } .cmp-row:nth-child(n + 9) { animation-delay: 0.4s; }
+.cmp-row:not(.head):hover { background: var(--bg2); }
+.read > * { animation: rise 0.5s ease both; }
+.read > *:nth-child(2) { animation-delay: 0.05s; } .read > *:nth-child(3) { animation-delay: 0.1s; }
+.read > *:nth-child(4) { animation-delay: 0.15s; } .read > *:nth-child(n + 5) { animation-delay: 0.2s; }
+.site { transition: background 0.12s, border-color 0.12s, padding-left 0.15s; }
+.site:hover { padding-left: 18px; }
+.steps > div { transition: transform 0.25s ease; }
+.steps > div:hover { transform: translateY(-4px); }
+.steps > div:hover i { color: var(--sun); }
+.tbl tbody tr { transition: background 0.12s; }
+.tbl tbody tr:hover { background: var(--bg2); }
+.defs > div { border-top: 1px solid var(--line2); padding-top: 14px; }
+.cmp-verdict { font-size: 19px; }
+.cmp-verdict b { border-bottom: 2px solid var(--sun); }
+.checks b { color: var(--sun); }
+.hero-facts b { color: #fff; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---- compare: needs grouped in two labelled rows */
+.cmp-mission { display: block; padding: 0; border: 1px solid var(--line2); border-bottom: 1px solid var(--line2); }
+.grp { display: grid; grid-template-columns: 190px minmax(0, 1fr); align-items: center; padding: 16px 22px 18px; }
+.grp + .grp { border-top: 1px solid var(--line2); }
+.grp > i { font-family: "Instrument Serif", serif; font-size: 25px; line-height: 1; letter-spacing: -0.01em; }
+.grp.sun > i { color: var(--sun); } .grp.earth > i { color: var(--earth); }
+.grp > div { display: flex; flex-wrap: wrap; gap: 12px 26px; }
+.cmp-verdict { margin-top: 22px; padding: 16px 22px; background: var(--bg2); border-left: 3px solid var(--sun); align-items: baseline; }
+@media (max-width: 800px) { .grp { grid-template-columns: 1fr; gap: 12px; } }
+
+/* ---- method: stat band, numbered cards, limits as cards */
+.doc { max-width: 1180px; counter-reset: sec; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 44px; border: 1px solid var(--line2); }
+.stats > div { padding: 24px 22px 22px; border-left: 1px solid var(--line2); }
+.stats > div:first-child { border-left: 0; background: var(--ink); color: var(--bg); }
+.stats b { display: block; font-family: var(--mono); font-weight: 500; font-size: clamp(26px, 3vw, 42px); letter-spacing: -0.04em; line-height: 1; }
+.stats span { display: block; margin-top: 14px; font-size: 13.5px; line-height: 1.4; color: var(--mut); }
+.stats > div:first-child span { color: inherit; opacity: 0.72; }
+.doc h2 { counter-increment: sec; font-size: 36px; font-weight: 400; letter-spacing: -0.03em; margin-top: 88px; padding-top: 30px; }
+.doc h2::before { content: "0" counter(sec); display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: var(--sun); margin-bottom: 12px; }
+.defs { counter-reset: d; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line2); border-left: 1px solid var(--line2); margin-top: 26px; }
+.defs > div { counter-increment: d; padding: 22px 24px 28px; border: 0; border-right: 1px solid var(--line2); border-bottom: 1px solid var(--line2); transition: background 0.2s; }
+.defs > div::before { content: counter(d); display: block; font-family: "Instrument Serif", serif; font-style: italic; font-size: 46px; line-height: 1; color: var(--sun); margin-bottom: 16px; }
+.defs > div:hover { background: var(--bg2); }
+.defs h3 { font-size: 18px; margin-bottom: 10px; }
+.doc h3.th { font-size: 21px; font-weight: 500; letter-spacing: -0.01em; margin-top: 44px; }
+.limits { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: none; margin-top: 26px; }
+.limits li { border: 1px solid var(--line2); border-left: 3px solid var(--sun); padding: 16px 20px; }
+.limits li::before { display: none; }
+.tbl td.num { font-family: var(--mono); }
+@media (max-width: 900px) { .stats, .defs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .limits { grid-template-columns: 1fr; } }
+
+/* ---- things rise in as you scroll to them */
+@supports (animation-timeline: view()) {
+  .doc h2, .doc .tbl, .limits li, .defs > div, .checks, .how h2 { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% entry 40%; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

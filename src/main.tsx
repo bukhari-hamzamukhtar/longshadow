@@ -1,9 +1,10 @@
-import { StrictMode, useEffect } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { fmtUTC } from "./lib/format";
 import { useApp } from "./store";
 import "./styles.css";
 import "./pages.css";
+import "./theme.css";
 import { Compare } from "./ui/Compare";
 import { Landing } from "./ui/Landing";
 import { Method } from "./ui/Method";
@@ -19,18 +20,28 @@ function Mark() {
 }
 
 function Header() {
-  const { page, t } = useApp();
+  const { page, t, theme } = useApp();
   const go = useApp.getState().go;
+  const [past, setPast] = useState(false);
+  useEffect(() => {
+    const f = () => setPast(window.scrollY > window.innerHeight - 70);
+    f();
+    window.addEventListener("scroll", f, { passive: true });
+    return () => window.removeEventListener("scroll", f);
+  }, [page]);
   const tool = page === "app" || page === "compare";
   return (
-    <div className={`top ${page === "home" ? "clear" : ""}`}>
+    <div className={`top ${page === "home" && !past ? "clear" : ""}`}>
       <button className="brand" onClick={() => go("home")}><Mark />Longshadow</button>
       <nav>
         <button className={page === "app" ? "on" : ""} onClick={() => go("app")}>Navigator</button>
         <button className={page === "compare" ? "on" : ""} onClick={() => go("compare")}>Compare sites</button>
         <button className={page === "method" ? "on" : ""} onClick={() => go("method")}>Method and checks</button>
       </nav>
-      {tool && <div className="right">{fmtUTC(t)}</div>}
+      <div className="right">
+        {tool && <span>{fmtUTC(t)}</span>}
+        <button className="theme" onClick={() => useApp.getState().setTheme(theme === "dark" ? "light" : "dark")}>{theme === "dark" ? "Light mode" : "Dark mode"}</button>
+      </div>
     </div>
   );
 }

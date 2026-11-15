@@ -26,6 +26,8 @@ interface State {
   terrain: { index: TerrainIndex | null; cap: HeightGrid | null; core: HeightGrid | null; patches: Record<string, HeightGrid> };
   horizonTick: number; // bumps when a horizon finishes loading
   customBusy: boolean;
+  theme: "dark" | "light";
+  setTheme: (t: "dark" | "light") => void;
   init: () => Promise<void>;
   go: (p: Page) => void;
   selectSite: (id: string) => void;
@@ -50,6 +52,17 @@ const DEFAULT_COMPARE = ["connecting-ridge", "shackleton-rim", "peak-near-shackl
 
 let started = false;
 
+function initialTheme(): "dark" | "light" {
+  if (typeof window === "undefined") return "dark";
+  let t: string | null = null;
+  try {
+    t = localStorage.getItem("theme");
+  } catch {}
+  const theme = t === "dark" || t === "light" ? t : window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  document.documentElement.dataset.theme = theme;
+  return theme;
+}
+
 export const useApp = create<State>((set, get) => ({
   ready: false,
   error: null,
@@ -68,6 +81,14 @@ export const useApp = create<State>((set, get) => ({
   terrain: { index: null, cap: null, core: null, patches: {} },
   horizonTick: 0,
   customBusy: false,
+  theme: initialTheme(),
+  setTheme: (theme) => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {}
+    set({ theme });
+  },
 
   init: async () => {
     if (get().ready || started) return;
