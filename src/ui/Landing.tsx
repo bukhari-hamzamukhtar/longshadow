@@ -1,10 +1,10 @@
 // The story page: why the lunar south pole is hard, shown with the real data.
 import { useEffect, useMemo, useRef, useState } from "react";
+import { DATA, MEDIA } from "../lib/base";
 import { fmtDay } from "../lib/format";
 import { Site } from "../lib/sky";
 import { DAY, HOUR, buildWindows, computeSeries, DEFAULT_RULES } from "../lib/windows";
 import { useApp } from "../store";
-import { MoonView } from "./MoonView";
 import { Panorama } from "./Panorama";
 
 /** true once the element has been on screen; `now` while it is on screen */
@@ -107,11 +107,10 @@ export function Landing() {
   const { sites, ready, horizonTick } = useApp();
   const go = useApp.getState().go;
   const [val, setVal] = useState<{ worst?: number; inside?: number; total?: number }>({});
-  const heroStart = useMemo(() => Math.floor(Date.now() / DAY) * DAY, []);
-  const hero = useSeen<HTMLElement>("0px");
-  const tHero = useClock(hero.now, heroStart, 5 * 3600, 60 * DAY);
+  // the hero is a loop rendered ahead of time by the app's own 3D engine, so it plays smoothly on any device
+  const heroSrc = useMemo(() => `${MEDIA}/${typeof window !== "undefined" && window.innerWidth * (window.devicePixelRatio || 1) > 1500 ? "hero-1080" : "hero-720"}.mp4`, []);
   useEffect(() => {
-    Promise.all([fetch("/data/validation/horizons.json").then((r) => r.json()), fetch("/data/validation/barker2021.json").then((r) => r.json())])
+    Promise.all([fetch(`${DATA}/validation/horizons.json`).then((r) => r.json()), fetch(`${DATA}/validation/barker2021.json`).then((r) => r.json())])
       .then(([h, b]) => setVal({ worst: h.worst_arcsec, inside: b.inside, total: b.total }))
       .catch(() => {});
   }, []);
@@ -127,8 +126,10 @@ export function Landing() {
 
   return (
     <div className="home">
-      <section className="hero" ref={hero.ref}>
-        <div className="hero-bg">{hero.now && <MoonView hero time={tHero} />}</div>
+      <section className="hero">
+        <div className="hero-bg">
+          <video className="hero-video" autoPlay muted loop playsInline preload="auto" poster={`${MEDIA}/hero.jpg`} src={heroSrc} />
+        </div>
         <div className="hero-shade" />
         <div className="hero-text">
           <span className="kicker">NASA Space Apps Challenge 2026 · Lunar Landing Site Navigator</span>
@@ -144,7 +145,7 @@ export function Landing() {
           <div><b className="num">5 m</b><span>NASA LOLA terrain around the Artemis III candidate regions</span></div>
           <div><b className="num">{sites.length || 29}</b><span>sites ready, plus any point you pick, 2020 to 2050</span></div>
         </div>
-        <div className="hero-note">Live render: LOLA terrain, shadows cast toward the true Sun position, {fmtDay(tHero, true)}</div>
+        <div className="hero-note">Shackleton crater at the south pole. One lunar day of real shadows, rendered by this app from NASA LOLA terrain.</div>
       </section>
 
       <Story kicker="The problem" title="At the south pole the Sun circles the horizon all year." visual={(on) => (ready && sunSite ? <SunStory site={sunSite} on={on} /> : <div className="story-frame wait" />)}>
