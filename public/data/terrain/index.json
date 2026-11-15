@@ -1,0 +1,147 @@
+{
+ "unit_m": 0.5,
+ "levels": {
+  "cap": {
+   "file": "terrain/cap240.demz",
+   "n": 2534,
+   "pixel_m": 240.0,
+   "x0_m": -303960.0,
+   "y0_m": 303960.0
+  },
+  "core": {
+   "file": "terrain/core60.demz",
+   "n": 2022,
+   "pixel_m": 60.0,
+   "x0_m": -60630.0,
+   "y0_m": 60630.0
+  }
+ },
+ "patches": {
+  "connecting-ridge": {
+   "file": "terrain/patch_connecting-ridge.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -21070.0,
+   "y0_m": -1490.0
+  },
+  "shackleton-rim": {
+   "file": "terrain/patch_shackleton-rim.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -12870.0,
+   "y0_m": 4270.0
+  },
+  "peak-near-shackleton": {
+   "file": "terrain/patch_peak-near-shackleton.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 19790.0,
+   "y0_m": -9790.0
+  },
+  "de-gerlache-rim-1": {
+   "file": "terrain/patch_de-gerlache-rim-1.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -47910.0,
+   "y0_m": 25150.0
+  },
+  "de-gerlache-rim-2": {
+   "file": "terrain/patch_de-gerlache-rim-2.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -56210.0,
+   "y0_m": 27890.0
+  },
+  "connecting-ridge-ext": {
+   "file": "terrain/patch_connecting-ridge-ext.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -40330.0,
+   "y0_m": 6910.0
+  },
+  "faustini-rim-a": {
+   "file": "terrain/patch_faustini-rim-a.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 55930.0,
+   "y0_m": 5590.0
+  },
+  "haworth": {
+   "file": "terrain/patch_haworth.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -46630.0,
+   "y0_m": 96570.0
+  },
+  "malapert-massif": {
+   "file": "terrain/patch_malapert-massif.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -14390.0,
+   "y0_m": 132150.0
+  },
+  "mons-mouton-plateau": {
+   "file": "terrain/patch_mons-mouton-plateau.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 57290.0,
+   "y0_m": 129410.0
+  },
+  "nobile-rim-1": {
+   "file": "terrain/patch_nobile-rim-1.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 72130.0,
+   "y0_m": 117370.0
+  },
+  "nobile-rim-2": {
+   "file": "terrain/patch_nobile-rim-2.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 144090.0,
+   "y0_m": 100470.0
+  },
+  "amundsen-rim": {
+   "file": "terrain/patch_amundsen-rim.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 148210.0,
+   "y0_m": 70250.0
+  },
+  "de-gerlache-kocher": {
+   "file": "terrain/patch_de-gerlache-kocher.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -123650.0,
+   "y0_m": -45850.0
+  },
+  "south-pole": {
+   "file": "terrain/patch_south-pole.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -10230.0,
+   "y0_m": 10250.0
+  },
+  "im2-athena": {
+   "file": "terrain/patch_im2-athena.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": 66870.0,
+   "y0_m": 148230.0
+  },
+  "im1-odysseus": {
+   "file": "terrain/patch_im1-odysseus.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -2710.0,
+   "y0_m": 303990.0
+  },
+  "lcross": {
+   "file": "terrain/patch_lcross.demz",
+   "n": 1024,
+   "pixel_m": 20.0,
+   "x0_m": -131690.0,
+   "y0_m": 116830.0
+  }
+ }
+}
