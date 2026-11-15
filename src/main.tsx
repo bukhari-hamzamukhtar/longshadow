@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { fmtUTC } from "./lib/format";
 import { useApp } from "./store";
 import "./styles.css";
+import "./pages.css";
 import { Compare } from "./ui/Compare";
 import { Landing } from "./ui/Landing";
 import { Method } from "./ui/Method";
@@ -51,7 +52,10 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(
+// reuse the root across hot reloads in development
+const w = window as unknown as { __root?: ReturnType<typeof createRoot> };
+const root = w.__root ?? (w.__root = createRoot(document.getElementById("root")!));
+root.render(
   <StrictMode>
     <App />
   </StrictMode>,

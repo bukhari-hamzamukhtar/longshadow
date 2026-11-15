@@ -14,7 +14,7 @@ const KIND: Record<string, string> = {
 };
 
 /** The 3D Moon. `hero` turns it into a hands-off background for the landing page. */
-export function MoonView({ hero = false }: { hero?: boolean }) {
+export function MoonView({ hero = false, time }: { hero?: boolean; time?: number }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const labels = useRef<HTMLDivElement>(null);
   const wrap = useRef<HTMLDivElement>(null);
@@ -23,7 +23,8 @@ export function MoonView({ hero = false }: { hero?: boolean }) {
   const [pin, setPin] = useState(false);
   const pinRef = useRef(false);
   pinRef.current = pin;
-  const { sites, siteId, t, mode, terrain, mastIdx, customBusy } = useApp();
+  const { sites, siteId, t: tStore, mode, terrain, mastIdx, customBusy } = useApp();
+  const t = time ?? tStore;
   const site = sites.find((s) => s.id === siteId);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export function MoonView({ hero = false }: { hero?: boolean }) {
     scene.current = sc;
     sc.loadTextures();
     sc.interactive = !hero;
-    sc.jumpTo(-62, -20, 0, 9500, 62, 0);
+    sc.jumpTo(hero ? -38 : -62, hero ? 12 : -20, 0, hero ? 7600 : 9500, hero ? 70 : 62, 0);
     sc.onMarker = (id) => useApp.getState().selectSite(id);
     sc.onPickSurface = (lat, lon) => {
       if (!pinRef.current) return;
@@ -53,13 +54,18 @@ export function MoonView({ hero = false }: { hero?: boolean }) {
   useEffect(() => {
     const sc = scene.current;
     if (!sc) return;
-    if (terrain.cap && !sc.hasLevel("cap")) sc.setLevel("cap", terrain.cap);
+    if (terrain.cap && !sc.hasLevel("cap")) {
+      sc.setLevel("cap", terrain.cap);
+      // landing page: drift from the whole Moon down to the pole, then keep turning slowly
+      if (hero) sc.flyTo(-89.25, -50, 1.0, 235, 27, 205, 9000, () => (sc.autoRotate = 0.012));
+    }
     if (terrain.core && !sc.hasLevel("core")) sc.setLevel("core", terrain.core);
   }, [terrain.cap, terrain.core]);
 
   useEffect(() => {
     const sc = scene.current;
     if (!sc) return;
+    if (hero) return;
     const list: Marker[] = sites.map((s) => ({ id: s.id, name: s.name, lat: s.lat, lon: s.lon, elevKm: (s.elev_m ?? 0) / 1000, kind: KIND[s.group] ?? "landing" }));
     sc.setMarkers(list);
   }, [sites]);
@@ -73,8 +79,8 @@ export function MoonView({ hero = false }: { hero?: boolean }) {
   }, [t]);
 
   useEffect(() => {
-    scene.current?.setMode(mode);
-  }, [mode]);
+    scene.current?.setMode(hero ? "sun" : mode);
+  }, [mode, hero]);
 
   // fly to the selected site and bring in its 20 m terrain patch
   useEffect(() => {
