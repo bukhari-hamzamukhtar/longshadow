@@ -201,3 +201,25 @@ h1 em, h2 em { font-family: "Instrument Serif", "Times New Roman", serif; font-s
 .tbl tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ink) 4%, transparent); }
 .tbl tfoot td { padding-bottom: 16px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ================= round 4: navigator is one calm scrolling page ================= */
+.nav { position: static; inset: auto; padding-top: var(--head); display: flex; flex-direction: column; }
+.stage { order: 1; display: block; }
+.bar { order: 2; }
+.read { order: 4; border-left: 0; border-top: 1px solid var(--line); overflow: visible; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); padding: 8px 12px 40px; }
+.read header, .read section, .read footer { border-bottom: 0; }
+.moon { height: 68vh; }
+.pano { height: 250px; }
+.sitesbox { order: 0; position: relative; border-bottom: 1px solid var(--line); z-index: 46; }
+.sitesbox summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 9px 16px; user-select: none; }
+.sitesbox summary::-webkit-details-marker { display: none; }
+.sitesbox .burger { font-size: 19px; line-height: 1; border: 1px solid var(--line2); padding: 5px 10px 7px; transition: background 0.15s, color 0.15s; }
+.sitesbox[open] .burger, .sitesbox summary:hover .burger { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.sitesbox summary b { font-weight: 500; font-size: 17px; letter-spacing: -0.01em; }
+.sitesbox summary i { font-style: normal; color: var(--dim); font-size: 12.5px; }
+.sitesbox .sites { position: absolute; left: 0; top: 100%; width: min(390px, 100vw); max-height: 72vh; overflow-y: auto; background: var(--bg); border: 1px solid var(--line2); box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35); animation: pop 0.18s ease-out; order: 0; }
+.more.left .more-body { right: auto; left: 0; }
+.more-body.one { display: flex; gap: 8px; align-items: center; }
+.more { margin-left: 0; }
+.stage .controls { gap: 10px; padding: 10px 16px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

@@ -134,7 +134,7 @@ export function MoonView({ hero = false, time }: { hero?: boolean; time?: number
           </div>
           <div className="moon-foot">
             {mode === "sun" ? "Shadows cast live from LOLA terrain toward the true Sun position" : "Lit areas can see the centre of Earth over the terrain right now"}
-            <span>Drag to orbit · scroll to zoom · shift-drag to pan</span>
+            <span>Drag to orbit · Ctrl + scroll to zoom · shift-drag to pan</span>
           </div>
         </>
       )}

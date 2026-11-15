@@ -187,26 +187,43 @@ export function Navigator() {
   const mi = Math.min(mastIdx, site.masts.length - 1);
   return (
     <div className="nav">
-      <SiteList />
+      <details className="sitesbox">
+        <summary><span className="burger">☰</span><b>{site.name}</b><i>Tap to choose a site or add your own point</i></summary>
+        <SiteList />
+      </details>
       <main className="stage">
         <MoonView />
         <div className="controls">
           <button className="btn play" onClick={() => set({ playing: !playing })}>{playing ? "❚❚ Pause" : "▶ Play"}</button>
+          <details className="more left">
+            <summary>Speed {SPEEDS.find((x) => x[1] === speed)?.[0]}</summary>
+            <div className="more-body one">
           <div className="seg">
             {SPEEDS.map(([l, v]) => (
               <button key={l} className={speed === v ? "on" : ""} onClick={() => set({ speed: v })}>{l}</button>
             ))}
           </div>
+            </div>
+          </details>
+          <details className="more left">
+            <summary>{new Date(t).toISOString().slice(0, 16).replace("T", " ")} UTC</summary>
+            <div className="more-body one">
           <input className="dt" type="datetime-local" value={toInputValue(t)} onChange={(e) => { const v = fromInputValue(e.target.value); if (isFinite(v)) set({ t: v, playing: false }); }} />
           <span className="utc">UTC</span>
           <button className="btn" onClick={() => set({ t: Date.now(), playing: false })}>Now</button>
+            </div>
+          </details>
           <span className="sp" />
-          <label className="lbl">Show</label>
+          <details className="more">
+            <summary>Timeline {spanD === 365 ? "1 yr" : spanD + " d"}</summary>
+            <div className="more-body one">
           <div className="seg">
             {[7, 30, 90, 365].map((d) => (
               <button key={d} className={spanD === d ? "on" : ""} onClick={() => set({ spanD: d })}>{d === 365 ? "1 yr" : `${d} d`}</button>
             ))}
           </div>
+            </div>
+          </details>
           <details className="more">
             <summary>⚙ Settings</summary>
             <div className="more-body">

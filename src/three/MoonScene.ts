@@ -559,7 +559,7 @@ export class MoonScene {
     el.addEventListener("pointercancel", up);
     el.addEventListener("contextmenu", (e) => e.preventDefault());
     el.addEventListener("wheel", (e) => {
-      if (window.innerWidth <= 1180 && !e.ctrlKey) return;
+      if (!e.ctrlKey) return;
       if (!this.interactive) return;
       e.preventDefault();
       this.anim = null;
