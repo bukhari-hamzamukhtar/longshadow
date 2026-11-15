@@ -211,6 +211,9 @@ export function Navigator() {
               <button key={d} className={spanD === d ? "on" : ""} onClick={() => set({ spanD: d })}>{d === 365 ? "1 yr" : `${d} d`}</button>
             ))}
           </div>
+          <details className="more">
+            <summary>Mission settings</summary>
+            <div className="more-body">
           <label className="lbl">Mast height</label>
           <div className="seg">
             {site.masts.map((m, i) => (
@@ -235,6 +238,8 @@ export function Navigator() {
               <button key={v} className={mission.durationD === v ? "on" : ""} onClick={() => set({ mission: { ...mission, durationD: v } })}>{v} d</button>
             ))}
           </div>
+            </div>
+          </details>
         </div>
         <Timeline win={win} t={t} mission={mission} onScrub={onScrub} />
       </div>
