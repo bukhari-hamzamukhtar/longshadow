@@ -1,0 +1,806 @@
+{
+ "bands_km": [
+  0.0,
+  0.3,
+  1.5,
+  6.0,
+  25.0,
+  90.0
+ ],
+ "layout": "per mast: elev[az_n], dist_km[az_n], layers[6][az_n] (float32, degrees)",
+ "sites": [
+  {
+   "id": "connecting-ridge",
+   "name": "Connecting Ridge",
+   "group": "Artemis III candidate regions",
+   "lat": -89.47351,
+   "lon": -137.2972,
+   "note": "The ridge between Shackleton and de Gerlache. One of the best-lit places on the Moon.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site01",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "Site01",
+   "slope_deg": 4.1,
+   "offset_km": 0.32,
+   "elev_m": 1949.0,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/connecting-ridge.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 87.1,
+     "sun_any": 91.3,
+     "longest_dark_d": 4.4,
+     "longest_lit_d": 183.3,
+     "earth_up": 50.9
+    },
+    "10": {
+     "sun_avg": 89.9,
+     "sun_any": 93.9,
+     "longest_dark_d": 2.8,
+     "longest_lit_d": 184.0,
+     "earth_up": 50.9
+    }
+   }
+  },
+  {
+   "id": "shackleton-rim",
+   "name": "Shackleton Rim",
+   "group": "Artemis III candidate regions",
+   "lat": -89.78469,
+   "lon": -156.17339,
+   "note": "The rim of Shackleton crater, right next to the south pole.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site04",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "Site04",
+   "slope_deg": 6.2,
+   "offset_km": 1.93,
+   "elev_m": 1737.5,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/shackleton-rim.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 84.1,
+     "sun_any": 88.5,
+     "longest_dark_d": 7.1,
+     "longest_lit_d": 155.3,
+     "earth_up": 49.6
+    },
+    "10": {
+     "sun_avg": 87.2,
+     "sun_any": 91.2,
+     "longest_dark_d": 2.6,
+     "longest_lit_d": 155.4,
+     "earth_up": 49.6
+    }
+   }
+  },
+  {
+   "id": "peak-near-shackleton",
+   "name": "Peak near Shackleton",
+   "group": "Artemis III candidate regions",
+   "lat": -88.81009,
+   "lon": 123.69888,
+   "note": "An isolated peak on the far side of Shackleton.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site07",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "Site07",
+   "slope_deg": 2.6,
+   "offset_km": 0.03,
+   "elev_m": 1647.2,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/peak-near-shackleton.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 82.7,
+     "sun_any": 88.5,
+     "longest_dark_d": 5.7,
+     "longest_lit_d": 130.2,
+     "earth_up": 53.6
+    },
+    "10": {
+     "sun_avg": 85.5,
+     "sun_any": 88.6,
+     "longest_dark_d": 5.7,
+     "longest_lit_d": 130.2,
+     "earth_up": 55.8
+    }
+   }
+  },
+  {
+   "id": "de-gerlache-rim-1",
+   "name": "de Gerlache Rim 1",
+   "group": "Artemis III candidate regions",
+   "lat": -88.66381,
+   "lon": -68.41325,
+   "note": "The rim of de Gerlache crater.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site11",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "Site11",
+   "slope_deg": 8.7,
+   "offset_km": 0.68,
+   "elev_m": 1813.9,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/de-gerlache-rim-1.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 79.1,
+     "sun_any": 81.6,
+     "longest_dark_d": 11.3,
+     "longest_lit_d": 143.9,
+     "earth_up": 54.8
+    },
+    "10": {
+     "sun_avg": 83.9,
+     "sun_any": 87.4,
+     "longest_dark_d": 7.3,
+     "longest_lit_d": 146.5,
+     "earth_up": 54.9
+    }
+   }
+  },
+  {
+   "id": "de-gerlache-rim-2",
+   "name": "de Gerlache Rim 2",
+   "group": "Artemis III candidate regions",
+   "lat": -88.3759,
+   "lon": -68.99089,
+   "note": "A second spot on the de Gerlache rim.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile SL2",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "SL2",
+   "slope_deg": 9.9,
+   "offset_km": 5.91,
+   "elev_m": 1500.8,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/de-gerlache-rim-2.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 65.2,
+     "sun_any": 67.4,
+     "longest_dark_d": 11.7,
+     "longest_lit_d": 22.4,
+     "earth_up": 53.8
+    },
+    "10": {
+     "sun_avg": 71.3,
+     "sun_any": 74.4,
+     "longest_dark_d": 10.5,
+     "longest_lit_d": 26.2,
+     "earth_up": 53.8
+    }
+   }
+  },
+  {
+   "id": "connecting-ridge-ext",
+   "name": "Connecting Ridge Extension",
+   "group": "Artemis III candidate regions",
+   "lat": -89.00177,
+   "lon": -96.30152,
+   "note": "The far end of the Connecting Ridge.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile SL3",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "SL3",
+   "slope_deg": 5.6,
+   "offset_km": 3.1,
+   "elev_m": 1555.5,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/connecting-ridge-ext.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 76.5,
+     "sun_any": 80.5,
+     "longest_dark_d": 7.1,
+     "longest_lit_d": 88.0,
+     "earth_up": 49.9
+    },
+    "10": {
+     "sun_avg": 80.0,
+     "sun_any": 84.2,
+     "longest_dark_d": 5.0,
+     "longest_lit_d": 88.0,
+     "earth_up": 52.2
+    }
+   }
+  },
+  {
+   "id": "faustini-rim-a",
+   "name": "Faustini Rim A",
+   "group": "Artemis III candidate regions",
+   "lat": -87.813,
+   "lon": 94.01376,
+   "note": "The rim of Faustini crater.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile LM7",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "LM7",
+   "slope_deg": 2.5,
+   "offset_km": 5.12,
+   "elev_m": 510.1,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/faustini-rim-a.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 57.0,
+     "sun_any": 61.6,
+     "longest_dark_d": 16.1,
+     "longest_lit_d": 26.2,
+     "earth_up": 44.7
+    },
+    "10": {
+     "sun_avg": 59.1,
+     "sun_any": 63.5,
+     "longest_dark_d": 16.1,
+     "longest_lit_d": 26.2,
+     "earth_up": 44.8
+    }
+   }
+  },
+  {
+   "id": "haworth",
+   "name": "Haworth",
+   "group": "Artemis III candidate regions",
+   "lat": -86.91085,
+   "lon": -22.85894,
+   "note": "High ground next to Haworth crater.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Haworth",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "Haworth",
+   "slope_deg": 1.2,
+   "offset_km": 4.46,
+   "elev_m": 1850.8,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/haworth.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 59.7,
+     "sun_any": 65.0,
+     "longest_dark_d": 17.5,
+     "longest_lit_d": 59.0,
+     "earth_up": 59.8
+    },
+    "10": {
+     "sun_avg": 60.8,
+     "sun_any": 66.3,
+     "longest_dark_d": 17.3,
+     "longest_lit_d": 59.0,
+     "earth_up": 60.1
+    }
+   }
+  },
+  {
+   "id": "malapert-massif",
+   "name": "Malapert Massif",
+   "group": "Artemis III candidate regions",
+   "lat": -85.97873,
+   "lon": -1.95308,
+   "note": "A 5 km high mountain that always faces Earth.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site23",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "Site23",
+   "slope_deg": 3.4,
+   "offset_km": 3.68,
+   "elev_m": 4961.1,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/malapert-massif.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 73.6,
+     "sun_any": 78.5,
+     "longest_dark_d": 11.3,
+     "longest_lit_d": 87.8,
+     "earth_up": 80.7
+    },
+    "10": {
+     "sun_avg": 79.1,
+     "sun_any": 83.2,
+     "longest_dark_d": 7.0,
+     "longest_lit_d": 87.8,
+     "earth_up": 100.0
+    }
+   }
+  },
+  {
+   "id": "mons-mouton-plateau",
+   "name": "Mons Mouton Plateau",
+   "group": "Artemis III candidate regions",
+   "lat": -85.48498,
+   "lon": 29.53827,
+   "note": "The flat top of Mons Mouton (Leibnitz Beta), a 6 km high mountain.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site20v2",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "Site20v2",
+   "slope_deg": 3.5,
+   "offset_km": 5.59,
+   "elev_m": 6176.4,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/mons-mouton-plateau.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 76.8,
+     "sun_any": 82.1,
+     "longest_dark_d": 9.0,
+     "longest_lit_d": 116.4,
+     "earth_up": 59.2
+    },
+    "10": {
+     "sun_avg": 78.0,
+     "sun_any": 82.4,
+     "longest_dark_d": 7.7,
+     "longest_lit_d": 116.5,
+     "earth_up": 77.4
+    }
+   }
+  },
+  {
+   "id": "nobile-rim-1",
+   "name": "Nobile Rim 1",
+   "group": "Artemis III candidate regions",
+   "lat": -85.54577,
+   "lon": 37.55741,
+   "note": "High ground on the rim of Nobile crater.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site06",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "Site06",
+   "slope_deg": 5.1,
+   "offset_km": 3.3,
+   "elev_m": 6119.7,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/nobile-rim-1.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 82.4,
+     "sun_any": 85.9,
+     "longest_dark_d": 8.7,
+     "longest_lit_d": 154.2,
+     "earth_up": 62.1
+    },
+    "10": {
+     "sun_avg": 82.7,
+     "sun_any": 86.1,
+     "longest_dark_d": 8.7,
+     "longest_lit_d": 154.3,
+     "earth_up": 62.3
+    }
+   }
+  },
+  {
+   "id": "nobile-rim-2",
+   "name": "Nobile Rim 2",
+   "group": "Artemis III candidate regions",
+   "lat": -84.10978,
+   "lon": 59.68375,
+   "note": "A second spot on the Nobile rim.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile DM2",
+   "tier": "lola5",
+   "artemis2024": true,
+   "tile": "DM2",
+   "slope_deg": 3.9,
+   "offset_km": 5.46,
+   "elev_m": 1426.3,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/nobile-rim-2.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 51.9,
+     "sun_any": 52.9,
+     "longest_dark_d": 15.0,
+     "longest_lit_d": 17.1,
+     "earth_up": 59.2
+    },
+    "10": {
+     "sun_avg": 52.0,
+     "sun_any": 53.0,
+     "longest_dark_d": 15.0,
+     "longest_lit_d": 17.1,
+     "earth_up": 60.4
+    }
+   }
+  },
+  {
+   "id": "amundsen-rim",
+   "name": "Amundsen Rim",
+   "group": "Artemis III candidate regions",
+   "lat": -84.41702,
+   "lon": 69.25348,
+   "note": "The rim of Amundsen crater.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile DM1",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "DM1",
+   "slope_deg": 5.0,
+   "offset_km": 5.75,
+   "elev_m": 829.2,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/amundsen-rim.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 55.3,
+     "sun_any": 56.6,
+     "longest_dark_d": 14.8,
+     "longest_lit_d": 18.7,
+     "earth_up": 58.4
+    },
+    "10": {
+     "sun_avg": 55.6,
+     "sun_any": 56.7,
+     "longest_dark_d": 14.7,
+     "longest_lit_d": 18.7,
+     "earth_up": 58.5
+    }
+   }
+  },
+  {
+   "id": "de-gerlache-kocher",
+   "name": "de Gerlache-Kocher Massif",
+   "group": "Artemis III candidate regions",
+   "lat": -85.82926,
+   "lon": -116.32001,
+   "note": "A massif between de Gerlache and Kocher craters.",
+   "source": "Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile Site42",
+   "tier": "lola5",
+   "artemis2024": false,
+   "tile": "Site42",
+   "slope_deg": 3.8,
+   "offset_km": 0.01,
+   "elev_m": 2706.7,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/de-gerlache-kocher.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 79.3,
+     "sun_any": 82.6,
+     "longest_dark_d": 8.8,
+     "longest_lit_d": 28.5,
+     "earth_up": 52.1
+    },
+    "10": {
+     "sun_avg": 79.7,
+     "sun_any": 82.9,
+     "longest_dark_d": 8.8,
+     "longest_lit_d": 28.5,
+     "earth_up": 52.1
+    }
+   }
+  },
+  {
+   "id": "south-pole",
+   "name": "Lunar South Pole",
+   "group": "Reference points",
+   "lat": -89.9999,
+   "lon": 0.0,
+   "note": "The pole itself. It sits on the inner wall of Shackleton crater.",
+   "source": "Geometric pole of the ME frame",
+   "tier": "lola5",
+   "elev_m": 1289.3,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/south-pole.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 24.5,
+     "sun_any": 27.7,
+     "longest_dark_d": 27.1,
+     "longest_lit_d": 12.1,
+     "earth_up": 17.1
+    },
+    "10": {
+     "sun_avg": 30.6,
+     "sun_any": 34.2,
+     "longest_dark_d": 27.1,
+     "longest_lit_d": 15.3,
+     "earth_up": 36.5
+    }
+   }
+  },
+  {
+   "id": "im2-athena",
+   "name": "IM-2 Athena",
+   "group": "Polar landings and impacts",
+   "lat": -84.7906,
+   "lon": 29.1957,
+   "note": "Intuitive Machines IM-2 lander, March 2025, on Mons Mouton.",
+   "source": "LROC landing site coordinates",
+   "tier": "lola20",
+   "elev_m": 5321.9,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/im2-athena.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 43.8,
+     "sun_any": 45.5,
+     "longest_dark_d": 17.1,
+     "longest_lit_d": 15.8,
+     "earth_up": 80.3
+    },
+    "10": {
+     "sun_avg": 44.5,
+     "sun_any": 46.4,
+     "longest_dark_d": 16.9,
+     "longest_lit_d": 16.2,
+     "earth_up": 80.6
+    }
+   }
+  },
+  {
+   "id": "im1-odysseus",
+   "name": "IM-1 Odysseus",
+   "group": "Polar landings and impacts",
+   "lat": -80.13,
+   "lon": 1.44,
+   "note": "Intuitive Machines IM-1 lander, February 2024, near Malapert A.",
+   "source": "NASA / LROC landing site coordinates",
+   "tier": "lola20",
+   "elev_m": 2594.4,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/im1-odysseus.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 37.5,
+     "sun_any": 38.2,
+     "longest_dark_d": 18.9,
+     "longest_lit_d": 12.7,
+     "earth_up": 100.0
+    },
+    "10": {
+     "sun_avg": 39.4,
+     "sun_any": 40.1,
+     "longest_dark_d": 18.4,
+     "longest_lit_d": 13.3,
+     "earth_up": 100.0
+    }
+   }
+  },
+  {
+   "id": "lcross",
+   "name": "LCROSS impact (Cabeus)",
+   "group": "Polar landings and impacts",
+   "lat": -84.675,
+   "lon": -48.725,
+   "note": "Where LCROSS hit a permanently shadowed crater in 2009 and found water.",
+   "source": "NASA LCROSS impact coordinates",
+   "tier": "lola20",
+   "elev_m": -3828.2,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/lcross.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 0.0,
+     "sun_any": 0.0,
+     "longest_dark_d": 365.0,
+     "longest_lit_d": 0.0,
+     "earth_up": 15.4
+    },
+    "10": {
+     "sun_avg": 0.0,
+     "sun_any": 0.0,
+     "longest_dark_d": 365.0,
+     "longest_lit_d": 0.0,
+     "earth_up": 15.5
+    }
+   }
+  },
+  {
+   "id": "chandrayaan-3",
+   "name": "Chandrayaan-3",
+   "group": "Polar landings and impacts",
+   "lat": -69.373,
+   "lon": 32.319,
+   "note": "ISRO Vikram lander, August 2023 (Shiv Shakti point).",
+   "source": "ISRO landing coordinates",
+   "tier": "lola240",
+   "elev_m": 529.0,
+   "masts": [
+    2.0,
+    10.0
+   ],
+   "az_n": 1440,
+   "horizon": "horizons/chandrayaan-3.bin",
+   "stats2027": {
+    "2": {
+     "sun_avg": 46.6,
+     "sun_any": 47.0,
+     "longest_dark_d": 15.9,
+     "longest_lit_d": 15.0,
+     "earth_up": 100.0
+    },
+    "10": {
+     "sun_avg": 47.0,
+     "sun_any": 47.5,
+     "longest_dark_d": 15.7,
+     "longest_lit_d": 15.1,
+     "earth_up": 100.0
+    }
+   }
+  },
+  {
+   "id": "apollo-11",
+   "name": "Apollo 11",
+   "group": "Apollo",
+   "lat": 0.6742,
+   "lon": 23.4731,
+   "note": "Tranquility Base, July 1969.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "apollo-12",
+   "name": "Apollo 12",
+   "group": "Apollo",
+   "lat": -3.0128,
+   "lon": -23.4219,
+   "note": "Ocean of Storms, November 1969.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "apollo-14",
+   "name": "Apollo 14",
+   "group": "Apollo",
+   "lat": -3.6459,
+   "lon": -17.4719,
+   "note": "Fra Mauro, February 1971.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "apollo-15",
+   "name": "Apollo 15",
+   "group": "Apollo",
+   "lat": 26.1324,
+   "lon": 3.6333,
+   "note": "Hadley Rille, July 1971.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "apollo-16",
+   "name": "Apollo 16",
+   "group": "Apollo",
+   "lat": -8.9734,
+   "lon": 15.5011,
+   "note": "Descartes Highlands, April 1972.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "apollo-17",
+   "name": "Apollo 17",
+   "group": "Apollo",
+   "lat": 20.1911,
+   "lon": 30.7655,
+   "note": "Taurus-Littrow valley, December 1972.",
+   "source": "LROC NAC coordinates (Wagner et al. 2017)",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "blue-ghost-1",
+   "name": "Blue Ghost Mission 1",
+   "group": "Other landings",
+   "lat": 18.5623,
+   "lon": 61.8103,
+   "note": "Firefly CLPS lander, March 2025, Mare Crisium.",
+   "source": "NASA / LROC landing site coordinates",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "slim",
+   "name": "SLIM",
+   "group": "Other landings",
+   "lat": -13.316,
+   "lon": 25.251,
+   "note": "JAXA precision lander, January 2024, near Shioli crater.",
+   "source": "JAXA landing coordinates",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "change-4",
+   "name": "Chang'e 4",
+   "group": "Other landings",
+   "lat": -45.4446,
+   "lon": 177.5991,
+   "note": "First far side landing, January 2019, Von Karman crater.",
+   "source": "LROC landing site coordinates",
+   "tier": "sphere",
+   "elev_m": null
+  },
+  {
+   "id": "change-6",
+   "name": "Chang'e 6",
+   "group": "Other landings",
+   "lat": -41.6385,
+   "lon": -153.9852,
+   "note": "Far side sample return, June 2024, Apollo basin.",
+   "source": "CNSA landing coordinates",
+   "tier": "sphere",
+   "elev_m": null
+  }
+ ]
+}
