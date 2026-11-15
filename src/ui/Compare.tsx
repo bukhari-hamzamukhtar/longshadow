@@ -73,7 +73,7 @@ function Axis({ from }: { from: number }) {
     const tt = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + k, 1);
     if (tt < from || tt > from + YEAR) continue;
     const m = new Date(tt);
-    ticks.push({ x: (tt - from) / YEAR, label: `${MONTHS[m.getUTCMonth()]}${m.getUTCMonth() === 0 ? " " + m.getUTCFullYear() : ""}` });
+    ticks.push({ x: (tt - from) / YEAR, label: m.getUTCMonth() === 0 ? String(m.getUTCFullYear()) : MONTHS[m.getUTCMonth()] });
   }
   return (
     <div className="axis">
@@ -181,7 +181,7 @@ export function Compare() {
             <Choice label="Longest outage" value={mission.maxOutageH} options={[[12, "12 h"], [24, "24 h"], [72, "3 d"], [240, "10 d"]]} onChange={(v) => setM({ maxOutageH: v })} />
           </>
         )}
-        <Choice label="Panel and antenna height" value={mastIdx} options={[[0, "2 m"], [1, "10 m"]]} onChange={(v) => set({ mastIdx: v })} />
+        <Choice label="Mast height" value={mastIdx} options={[[0, "2 m"], [1, "10 m"]]} onChange={(v) => set({ mastIdx: v })} />
       </div>
       <div className="cmp-verdict">
         <span className="num">{fmtDay(tRef, true)}</span>
@@ -199,7 +199,7 @@ export function Compare() {
           <div className="c-cal"><Axis from={from} /></div>
           <div className="c-num">Open landing days</div>
           <div className="c-num">Next window</div>
-          <div className="c-at">Stay from {fmtDay(tRef)}</div>
+          <div className="c-at">A stay from {fmtDay(tRef)}</div>
         </div>
         {table.map((r) => (
           <div className="cmp-row" key={r.site.id}>

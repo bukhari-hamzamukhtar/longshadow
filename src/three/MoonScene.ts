@@ -2,6 +2,7 @@
 // marched shadows, the Sun and Earth at their true positions, site markers.
 // Scene units are km in the Moon ME frame (x through 0N 0E, z through the north pole).
 import * as THREE from "three";
+import { DATA } from "../lib/base";
 import type { HeightGrid } from "../lib/terrain";
 import { EARTH_FRAG, EARTH_VERT, GLOBE_FRAG, GLOBE_VERT, TERRAIN_FRAG, TERRAIN_VERT } from "./shaders";
 
@@ -119,6 +120,12 @@ export class MoonScene {
   onFrame: () => void = () => {};
   interactive = true;
   showMarkers = true;
+  /** total pixels drawn while the view is moving, and when it rests */
+  budgetFast = 260_000;
+  budgetFull = 1_500_000;
+  private fast = false;
+  private lastMove = 0;
+  private ratio = 1;
 
   constructor(canvas: HTMLCanvasElement, labelRoot: HTMLElement | null) {
     this.labelRoot = labelRoot;
@@ -136,6 +143,7 @@ export class MoonScene {
       uEarth: { value: new THREE.Vector3(1, 0, 0) }, uEarthRad: { value: 0.0166 },
       uMode: { value: 0 }, uExposure: { value: 2 }, uAmbient: { value: 0.0011 }, uCam: { value: new THREE.Vector3() },
       uColor: { value: null }, uHasColor: { value: 0 }, uExag: { value: 1 }, uPixKm: { value: 1 }, uShadows: { value: 1 },
+      uSteps: { value: 112 }, uGrow: { value: 0.075 },
     };
     // globe
     const gm = new THREE.ShaderMaterial({
@@ -205,17 +213,37 @@ export class MoonScene {
     this.dirty = true;
   }
 
+  /** call when something is changing continuously (drag, zoom, playback) */
+  private moving() {
+    this.lastMove = performance.now();
+    this.dirty = true;
+  }
+
+  private applyQuality(fast: boolean) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const budget = fast ? this.budgetFast : this.budgetFull;
+    const r = Math.min(dpr, Math.sqrt(budget / Math.max(1, this.w * this.h)));
+    if (Math.abs(r - this.ratio) > 0.01) {
+      this.ratio = r;
+      this.renderer.setPixelRatio(r);
+      this.renderer.setSize(this.w, this.h, false);
+    }
+    this.shared.uSteps.value = fast ? 60 : 112;
+    this.shared.uGrow.value = fast ? 0.12 : 0.075;
+    this.fast = fast;
+  }
+
   setSize(w: number, h: number) {
     this.w = w;
     this.h = h;
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
-    this.renderer.setSize(w, h, false);
+    this.ratio = -1;
+    this.applyQuality(this.fast);
     this.camera.aspect = this.bgCamera.aspect = w / h;
     this.dirty = true;
   }
 
   // ------------------------------------------------------------- assets
-  loadTextures(base = "/data") {
+  loadTextures(base = DATA) {
     const tl = new THREE.TextureLoader();
     tl.load(`${base}/tex/moon_color.jpg`, (t) => {
       t.colorSpace = THREE.SRGBColorSpace;
@@ -297,7 +325,7 @@ export class MoonScene {
       vertexShader: TERRAIN_VERT, fragmentShader: TERRAIN_FRAG,
       uniforms: { ...this.shared, uMesh: { value: new THREE.Vector4(left, top, size, 0) }, uLevel: { value: name === "cap" ? 0 : name === "core" ? 1 : 2 } },
     });
-    const mesh = new THREE.Mesh(gridGeometry(name === "patch" ? 513 : 769), mat);
+    const mesh = new THREE.Mesh(gridGeometry(name === "cap" ? 641 : 513), mat);
     mesh.frustumCulled = false;
     this.scene.add(mesh);
     this.levels[name] = { grid, tex, mesh };
@@ -318,7 +346,7 @@ export class MoonScene {
     const ed = Math.hypot(s.earth[0], s.earth[1], s.earth[2]);
     (this.shared.uEarth.value as THREE.Vector3).set(s.earth[0] / ed, s.earth[1] / ed, s.earth[2] / ed);
     this.shared.uEarthRad.value = Math.asin(6378.137 / ed);
-    this.dirty = true;
+    this.moving();
   }
 
   setMode(mode: "sun" | "earth") {
@@ -498,7 +526,7 @@ export class MoonScene {
         const d = Math.hypot(p.x - q.x, p.y - q.y);
         if (pinch > 0) this.dist = THREE.MathUtils.clamp((this.dist * pinch) / d, 1.2, 40000);
         pinch = d;
-        this.dirty = true;
+        this.moving();
         return;
       }
       const dx = e.clientX - down.x, dy = e.clientY - down.y;
@@ -517,7 +545,7 @@ export class MoonScene {
         this.yaw = down.yaw - dx * 0.006;
         this.pitch = THREE.MathUtils.clamp(down.pitch + dy * 0.005, 0.06, Math.PI / 2 - 0.01);
       }
-      this.dirty = true;
+      this.moving();
     });
     const up = (e: PointerEvent) => {
       pts.delete(e.pointerId);
@@ -536,7 +564,7 @@ export class MoonScene {
       this.anim = null;
       this.autoRotate = 0;
       this.dist = THREE.MathUtils.clamp(this.dist * Math.exp(e.deltaY * 0.0012), 1.2, 40000);
-      this.dirty = true;
+      this.moving();
     }, { passive: false });
   }
 
@@ -580,13 +608,20 @@ export class MoonScene {
   private tick(now: number) {
     const dt = Math.min(0.1, (now - this.lastT) / 1000);
     this.lastT = now;
-    if (this.anim) this.stepAnim(now);
+    if (this.anim) {
+      this.stepAnim(now);
+      this.lastMove = now;
+    }
     if (this.autoRotate) {
       this.yaw += this.autoRotate * dt;
-      this.dirty = true;
+      this.moving();
     }
+    // draw light while things move, then one full-quality frame once they stop
+    const wantFast = now - this.lastMove < 220;
+    if (!wantFast && this.fast) this.dirty = true;
     if (!this.dirty) return;
     this.dirty = false;
+    if (wantFast !== this.fast || this.ratio < 0) this.applyQuality(wantFast);
     this.updateCamera();
     const r = this.renderer;
     r.clear();

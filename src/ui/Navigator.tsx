@@ -211,7 +211,7 @@ export function Navigator() {
               <button key={d} className={spanD === d ? "on" : ""} onClick={() => set({ spanD: d })}>{d === 365 ? "1 yr" : `${d} d`}</button>
             ))}
           </div>
-          <label className="lbl">Panel and antenna height</label>
+          <label className="lbl">Mast height</label>
           <div className="seg">
             {site.masts.map((m, i) => (
               <button key={m} className={mi === i ? "on" : ""} onClick={() => set({ mastIdx: i })}>{m} m</button>

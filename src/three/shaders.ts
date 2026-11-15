@@ -19,21 +19,33 @@ vec2 rectUV(vec4 r, vec2 xy) { return vec2(xy.x - r.x, r.y - xy.y) / r.z; }
 float edgeW(vec2 uv, float band) { vec2 d = min(uv, 1.0 - uv); return clamp(min(d.x, d.y) / band, 0.0, 1.0); }
 float lodFor(float foot, float texel) { return foot > 0.0 ? max(0.0, log2(foot / texel)) : 0.0; }
 
-// height (km) above the reference sphere. foot = sample footprint in km, 0 = finest
+// height (km) above the reference sphere. foot = sample footprint in km, 0 = finest.
+// Deep inside a level only that level is read. Near its edge it is blended
+// with the coarser level below so the meshes join without a step.
 float heightAt(vec2 xy, float foot) {
+  float hp = 0.0, wp = 0.0;
+  if (uPatchOn > 0.5) {
+    vec2 uv = rectUV(uPatchRect, xy);
+    wp = edgeW(uv, 0.04);
+    if (wp > 0.0) {
+      hp = textureLod(uPatch, uv, lodFor(foot, uPatchRect.w)).r;
+      if (wp >= 1.0) return hp;
+    }
+  }
+  float hc = 0.0, wc = 0.0;
+  if (uCoreOn > 0.5) {
+    vec2 uv = rectUV(uCoreRect, xy);
+    wc = edgeW(uv, 0.04);
+    if (wc > 0.0) {
+      hc = textureLod(uCore, uv, lodFor(foot, uCoreRect.w)).r;
+      if (wc >= 1.0) return wp > 0.0 ? mix(hc, hp, wp) : hc;
+    }
+  }
   vec2 a = abs(xy);
   float fade = 1.0 - smoothstep(uCapHalf - 8.0, uCapHalf - 0.5, max(a.x, a.y));
   float h = textureLod(uCap, rectUV(uCapRect, xy), lodFor(foot, uCapRect.w)).r * fade;
-  if (uCoreOn > 0.5) {
-    vec2 uv = rectUV(uCoreRect, xy);
-    float w = edgeW(uv, 0.04);
-    if (w > 0.0) h = mix(h, textureLod(uCore, uv, lodFor(foot, uCoreRect.w)).r, w);
-  }
-  if (uPatchOn > 0.5) {
-    vec2 uv = rectUV(uPatchRect, xy);
-    float w = edgeW(uv, 0.04);
-    if (w > 0.0) h = mix(h, textureLod(uPatch, uv, lodFor(foot, uPatchRect.w)).r, w);
-  }
+  if (wc > 0.0) h = mix(h, hc, wc);
+  if (wp > 0.0) h = mix(h, hp, wp);
   return h;
 }
 
@@ -94,8 +106,10 @@ uniform float uLevel;   // 0 cap, 1 core, 2 patch
 uniform float uExag;
 uniform float uPixKm;   // km per screen pixel at the camera target
 uniform float uShadows;
+uniform float uSteps;   // march length, lower while the view is moving
+uniform float uGrow;    // step growth per sample
 varying vec2 vXY;
-const int STEPS = 110;
+const int STEPS = 120;
 const float MAXH = 8.2;
 
 // Fraction of a disk of angular radius rad (centre direction s) that clears the
@@ -105,8 +119,10 @@ float clearTo(vec3 up, float h, vec3 s, float rad, float texel) {
   float sinEl = dot(up, s);
   vec3 P = up * r0;
   float minClear = 1e9;
-  float t = texel * 1.5;
+  float base = max(texel, uPixKm * 0.7);   // no point marching finer than a screen pixel
+  float t = base * 1.5;
   for (int i = 0; i < STEPS; i++) {
+    if (float(i) >= uSteps) break;
     float b = 2.0 * t * r0 * sinEl + t * t;
     float rq = sqrt(r0 * r0 + b);
     float alt = h + b / (rq + r0);
@@ -115,7 +131,7 @@ float clearTo(vec3 up, float h, vec3 s, float rad, float texel) {
     vec2 qxy = 2.0 * R * vec2(Q.y, Q.x) / (1.0 - Q.z);
     vec2 a = abs(qxy);
     if (max(a.x, a.y) > uCapHalf) break;
-    float foot = max(texel, t * 0.075);
+    float foot = max(base, t * uGrow);
     float th = heightAt(qxy, foot);
     minClear = min(minClear, (alt - th) / t);
     if (minClear < -rad) break;
@@ -153,6 +169,10 @@ void main() {
   float ks = 1.0 + rr * rr / (4.0 * R * R);
   float hn = dot(vec2(hx, hy), er) * ks;
   float he = dot(vec2(hx, hy), ee) * ks;
+  // at the outer edge the heights fade to the sphere. That slope is not real, so flatten it.
+  float edge = 1.0 - smoothstep(uCapHalf - 9.0, uCapHalf - 1.5, max(ab.x, ab.y));
+  hn *= edge;
+  he *= edge;
   // fine relief below the data resolution, only when zoomed in past it
   float fine = clamp(texel / max(uPixKm, 1e-6) * 0.5 - 0.6, 0.0, 1.0) * 0.045;
   if (fine > 0.0) {
