@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { BASE } from "./lib/base";
 import { loadEphem } from "./lib/ephem";
 import { Site } from "./lib/sky";
 import { ensureHorizon, loadSites } from "./lib/sites";
@@ -36,7 +37,9 @@ interface State {
 }
 
 const pageFromPath = (): Page => {
-  const p = location.pathname.replace(/\/+$/, "");
+  let p = location.pathname;
+  if (BASE && p.startsWith(BASE)) p = p.slice(BASE.length);
+  p = p.replace(/\/+$/, "");
   if (p === "/app") return "app";
   if (p === "/compare") return "compare";
   if (p === "/method") return "method";
@@ -97,7 +100,7 @@ export const useApp = create<State>((set, get) => ({
   },
 
   go: (page) => {
-    const path = page === "home" ? "/" : `/${page}`;
+    const path = `${BASE}${page === "home" ? "/" : `/${page}`}`;
     if (location.pathname !== path) history.pushState({}, "", path);
     set({ page });
     window.scrollTo(0, 0);

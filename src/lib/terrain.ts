@@ -1,5 +1,6 @@
 // LOLA terrain in the browser: loading the height grids, and computing the
 // horizon of any point live (used for custom sites).
+import { DATA } from "./base";
 import { R_MOON_KM } from "./ephem";
 import { Profile } from "./sky";
 import { BANDS_KM, N_LAYERS, makeProfile } from "./sites";
@@ -39,7 +40,7 @@ export function xyToLL(x: number, y: number): [number, number] {
   return [-90 + (2 * Math.atan(r / (2 * R))) / DEG, Math.atan2(x, y) / DEG];
 }
 
-export async function loadIndex(base = "/data"): Promise<TerrainIndex> {
+export async function loadIndex(base = DATA): Promise<TerrainIndex> {
   return fetch(`${base}/terrain/index.json`).then((r) => r.json());
 }
 
@@ -50,7 +51,7 @@ async function gunzip(buf: ArrayBuffer): Promise<ArrayBuffer> {
   return new Response(new Blob([buf]).stream().pipeThrough(ds)).arrayBuffer();
 }
 
-export async function loadGrid(meta: GridMeta, unitM: number, base = "/data"): Promise<HeightGrid> {
+export async function loadGrid(meta: GridMeta, unitM: number, base = DATA): Promise<HeightGrid> {
   const raw = await fetch(`${base}/${meta.file}`).then((r) => r.arrayBuffer());
   const d = new Int16Array(await gunzip(raw));
   const n = meta.n;

@@ -9,6 +9,7 @@
 // Fallback outside the table: astronomy-engine positions plus the IAU/WGCCRE
 // lunar rotation model. Good to a few hundredths of a degree.
 import * as Astronomy from "astronomy-engine";
+import { DATA } from "./base";
 
 export const R_MOON_KM = 1737.4;
 export const R_SUN_KM = 695700;
@@ -46,7 +47,7 @@ export function getEphem() {
   return table;
 }
 
-export async function loadEphem(base = "/data"): Promise<EphemTable> {
+export async function loadEphem(base = DATA): Promise<EphemTable> {
   const [meta, buf] = await Promise.all([
     fetch(`${base}/ephem.json`).then((r) => r.json()),
     fetch(`${base}/ephem.bin`).then((r) => r.arrayBuffer()),

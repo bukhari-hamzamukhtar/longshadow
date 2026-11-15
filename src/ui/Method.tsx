@@ -1,5 +1,6 @@
 // How the numbers are made, and the checks against outside references.
 import { useEffect, useState } from "react";
+import { DATA as DATA_URL } from "../lib/base";
 
 const DATA: [string, string, string, string][] = [
   ["JPL DE440 planetary ephemeris and lunar orientation", "Where the Sun, Earth and Moon are, and how the Moon is turned", "NASA NAIF generic kernels (de440s.bsp, moon_pa_de440_200625.bpc, moon_de440_250416.tf)", "https://naif.jpl.nasa.gov/naif/data_generic.html"],
@@ -14,8 +15,8 @@ export function Method() {
   const [hz, setHz] = useState<any>(null);
   const [bk, setBk] = useState<any>(null);
   useEffect(() => {
-    fetch("/data/validation/horizons.json").then((r) => r.json()).then(setHz).catch(() => {});
-    fetch("/data/validation/barker2021.json").then((r) => r.json()).then(setBk).catch(() => {});
+    fetch(`${DATA_URL}/validation/horizons.json`).then((r) => r.json()).then(setHz).catch(() => {});
+    fetch(`${DATA_URL}/validation/barker2021.json`).then((r) => r.json()).then(setBk).catch(() => {});
   }, []);
   return (
     <div className="doc">

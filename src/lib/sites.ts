@@ -1,4 +1,5 @@
 // Curated landing sites and their terrain horizons.
+import { DATA } from "./base";
 import { Profile, Site } from "./sky";
 
 export const N_LAYERS = 6;
@@ -35,7 +36,7 @@ interface RawSite {
   stats2027?: Record<string, Record<string, number>>;
 }
 
-export async function loadSites(base = "/data"): Promise<Site[]> {
+export async function loadSites(base = DATA): Promise<Site[]> {
   const j = await fetch(`${base}/sites.json`).then((r) => r.json());
   return (j.sites as RawSite[]).map((s) => ({
     id: s.id, name: s.name, group: s.group, lat: s.lat, lon: s.lon, note: s.note, source: s.source, tier: s.tier,
