@@ -6,7 +6,7 @@ REPO="$(git config --get remote.origin.url)"
 NAME="$(git config user.name)"
 MAIL="$(git config user.email)"
 npx tsc --noEmit
-npx vite build --base=/longshadow/
+SITE_SUBFOLDER=longshadow npx vite build
 cp dist/index.html dist/404.html   # lets /longshadow/app and other deep links load the app
 touch dist/.nojekyll
 cd dist
