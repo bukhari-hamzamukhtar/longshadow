@@ -1,0 +1,37 @@
+{
+ "t0": 1577836800,
+ "step": 21600.0,
+ "n": 43833,
+ "columns": [
+  "sun_x",
+  "sun_y",
+  "sun_z",
+  "earth_x",
+  "earth_y",
+  "earth_z",
+  "q0",
+  "q1",
+  "q2",
+  "q3"
+ ],
+ "units": "km, Moon-centred, apparent (LT+S); quaternion rotates J2000 to ME (scalar first)",
+ "frame": "MOON_ME_DE440_ME421",
+ "kernels": [
+  "naif0012.tls",
+  "pck00011.tpc",
+  "de440s.bsp",
+  "moon_pa_de440_200625.bpc",
+  "moon_de440_250416.tf"
+ ],
+ "toolkit": "CSPICE_N0067",
+ "interp_error": {
+  "sun_arcsec": 0.007754311797690628,
+  "earth_arcsec": 0.01725682427034998,
+  "earth_km": 0.03566487171125634,
+  "rot_arcsec": 0.01738682308405056
+ },
+ "range_utc": [
+  "2020-01-01",
+  "2050-01-01"
+ ]
+}
