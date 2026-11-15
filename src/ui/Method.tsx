@@ -21,8 +21,14 @@ export function Method() {
   return (
     <div className="doc">
       <span className="kicker">Method and checks</span>
-      <h1>How Longshadow gets its numbers, and how we know they are right.</h1>
+      <h1>How Longshadow gets its numbers, and how we know they are <em>right.</em></h1>
       <p className="lead">Everything on this site is computed from open NASA data by code you can read and rerun. This page says what we compute, what we checked it against, and where the limits are.</p>
+      <div className="stats">
+        <div><b>{hz ? `${hz.worst_arcsec}″` : "…"}</b><span>largest gap to JPL Horizons, Sun and Earth angles</span></div>
+        <div><b>2,928</b><span>angles checked: 8 sites, every two days for a year</span></div>
+        <div><b>{bk ? `${bk.inside} of ${bk.total}` : "…"}</b><span>sunlight averages inside the range NASA Goddard published</span></div>
+        <div><b>0.15%</b><span>the browser and the Python pipeline agree within this</span></div>
+      </div>
 
       <h2>What we compute</h2>
       <div className="defs">

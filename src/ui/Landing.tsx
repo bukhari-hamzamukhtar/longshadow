@@ -41,7 +41,7 @@ function useClock(on: boolean, start: number, rate: number, loop: number) {
   return t;
 }
 
-function Story({ kicker, title, children, visual, flip = false }: { kicker: string; title: string; children: React.ReactNode; visual: (on: boolean) => React.ReactNode; flip?: boolean }) {
+function Story({ kicker, title, children, visual, flip = false }: { kicker: string; title: React.ReactNode; children: React.ReactNode; visual: (on: boolean) => React.ReactNode; flip?: boolean }) {
   const { ref, seen, now } = useSeen<HTMLElement>();
   return (
     <section ref={ref} className={`story ${seen ? "in" : ""} ${flip ? "flip" : ""}`}>
@@ -148,24 +148,24 @@ export function Landing() {
         <div className="hero-note">Shackleton crater at the south pole. One lunar day of real shadows, rendered by this app from NASA LOLA terrain.</div>
       </section>
 
-      <Story kicker="The problem" title="At the south pole the Sun circles the horizon all year." visual={(on) => (ready && sunSite ? <SunStory site={sunSite} on={on} /> : <div className="story-frame wait" />)}>
+      <Story kicker="The problem" title={<>At the south pole the Sun <em>circles the horizon</em> all year.</>} visual={(on) => (ready && sunSite ? <SunStory site={sunSite} on={on} /> : <div className="story-frame wait" />)}>
         <p>The Moon is tilted by only 1.5 degrees. So near the poles the Sun stays right on the horizon and slides along it once a month.</p>
         <p>Every hill on the skyline can block it. Solar power comes and goes with the terrain. This is the real skyline at the IM-2 landing site, drawn from NASA laser altimeter data.</p>
       </Story>
 
-      <Story flip kicker="The other problem" title="Earth sits low too, and it drifts." visual={(on) => (ready && earthSite ? <EarthStory site={earthSite} on={on} /> : <div className="story-frame wait" />)}>
+      <Story flip kicker="The other problem" title={<>Earth sits low too, and <em>it drifts.</em></>} visual={(on) => (ready && earthSite ? <EarthStory site={earthSite} on={on} /> : <div className="story-frame wait" />)}>
         <p>From the Moon, Earth hangs in almost the same spot of the sky. But it wobbles up and down by about 6 degrees every month.</p>
         <p>Near the pole that is enough to drop it behind the hills. When Earth is hidden there is no direct radio link, and a lander is on its own.</p>
       </Story>
 
-      <Story kicker="Why site choice is hard" title="A short walk changes everything." visual={() => (<div className="story-frame pad"><Bars rows={bars} /><div className="bars-gap" /><Bars rows={mast} /><div className="story-cap"><span>Share of the year 2027 with sunlight</span><span>Connecting Ridge, two panel heights</span></div></div>)}>
+      <Story kicker="Why site choice is hard" title={<>A short walk <em>changes everything.</em></>} visual={() => (<div className="story-frame pad"><Bars rows={bars} /><div className="bars-gap" /><Bars rows={mast} /><div className="story-cap"><span>Share of the year 2027 with sunlight</span><span>Connecting Ridge, two panel heights</span></div></div>)}>
         <p>Two spots a few kilometres apart can get very different light. The rim of Shackleton crater is lit most of the year. The pole itself, on the crater wall next to it, is mostly dark. The LCROSS impact site never sees the Sun at all.</p>
         <p>Height matters as well. Lifting the panels from 2 m to 10 m at the same spot removes most of the dark spells.</p>
       </Story>
 
       <section className="how">
         <span className="kicker">How it works</span>
-        <h2>Four steps, all from open NASA data.</h2>
+        <h2>Four steps, all from <em>open NASA data.</em></h2>
         <div className="steps">
           <div><i>1</i><h3>Sun and Earth</h3><p>Positions come from JPL's DE440 ephemeris through NASA's SPICE toolkit, in the same Moon frame as the terrain maps. Light travel time and aberration are included.</p></div>
           <div><i>2</i><h3>Terrain</h3><p>LOLA elevation maps from the Lunar Reconnaissance Orbiter: 5 m per pixel around the candidate regions, 20 m down to 80°S, 240 m beyond.</p></div>
@@ -180,7 +180,7 @@ export function Landing() {
       </section>
 
       <section className="end">
-        <h2>Pick a site. Pick a date. See what the lander sees.</h2>
+        <h2>Pick a site. Pick a date. <em>See what the lander sees.</em></h2>
         <div className="cta">
           <button className="btn big" onClick={() => go("app")}>Open the navigator</button>
           <button className="btn big ghost" onClick={() => go("compare")}>Compare sites and dates</button>
