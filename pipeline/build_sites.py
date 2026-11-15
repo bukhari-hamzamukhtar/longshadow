@@ -1,6 +1,6 @@
 """Build the curated site list and the terrain horizon of every site.
 
-Three accuracy tiers
+Accuracy tiers
   lola5    PGDA 5 m/pix site DEM near the site, LOLA 20 m polar DEM beyond,
            LOLA 240 m DEM past 80S.  (Artemis III candidate regions)
   lola20   LOLA 20 m polar DEM, 240 m past 80S.   (other sites south of 80S)
@@ -18,12 +18,14 @@ import os
 import sys
 import time
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import numpy as np
 import spiceypy as sp
 from scipy import ndimage as ndi
 
-from common import (R_MOON, R_SUN_KM, R_EARTH_KM, Source, disk_fraction, horizon_profile, open_lola,
-                    open_site_tif, topo_azel, xy_to_ll, ll_to_xy, heights)
+from common import (R_SUN_KM, Source, disk_fraction, horizon_profile, ll_to_xy, open_lola, open_site_tif, topo_azel,
+                    xy_to_ll)
 
 MASTS = [2.0, 10.0]
 AZ_N = 1440
@@ -32,7 +34,7 @@ KERNELS = ["naif0012.tls", "pck00011.tpc", "de440s.bsp", "moon_pa_de440_200625.b
 
 A3 = "Artemis III candidate regions"
 REGIONS = [
-    # tile, id, name, in the 2024 short list, note
+    # tile, id, name, on the 2024 short list, note
     ("Site01", "connecting-ridge", "Connecting Ridge", False, "The ridge between Shackleton and de Gerlache. One of the best-lit places on the Moon."),
     ("Site04", "shackleton-rim", "Shackleton Rim", False, "The rim of Shackleton crater, right next to the south pole."),
     ("Site07", "peak-near-shackleton", "Peak near Shackleton", False, "An isolated peak on the far side of Shackleton."),
@@ -43,7 +45,7 @@ REGIONS = [
     ("Haworth", "haworth", "Haworth", True, "High ground next to Haworth crater."),
     ("Site23", "malapert-massif", "Malapert Massif", True, "A 5 km high mountain that always faces Earth."),
     ("Site20v2", "mons-mouton-plateau", "Mons Mouton Plateau", True, "The flat top of Mons Mouton (Leibnitz Beta), a 6 km high mountain."),
-    ("Site06", "nobile-rim-1", "Nobile Rim 1", True, "The rim of Nobile crater."),
+    ("Site06", "nobile-rim-1", "Nobile Rim 1", True, "High ground on the rim of Nobile crater."),
     ("DM2", "nobile-rim-2", "Nobile Rim 2", True, "A second spot on the Nobile rim."),
     ("DM1", "amundsen-rim", "Amundsen Rim", False, "The rim of Amundsen crater."),
     ("Site42", "de-gerlache-kocher", "de Gerlache-Kocher Massif", False, "A massif between de Gerlache and Kocher craters."),
@@ -92,14 +94,21 @@ def earth_up(earth, lat, lon, h, horizon):
     return el > hz
 
 
-def find_best_site(tile, sources, sun, n_cand=240, margin=1500.0, max_slope=12.0):
-    """Best-lit gentle spot of a 5 m site DEM.
+def find_best_site(tile, sources, sun, radius=6000.0, n_cand=200, max_slope=10.0):
+    """Best-lit gentle spot near the nominal centre of a 5 m site DEM.
 
-    1. Work on a 20 m copy of the tile. Keep local high points (topographic
-       prominence against a 3 km mean) where the slope stays under max_slope.
-    2. For the top candidates compute a coarse horizon (1 deg) and the mean
-       visible fraction of the Sun over one year, 2 m above ground.
-    3. Refine the winner on a 10 m grid with a finer horizon.
+    The tile centre is the published site location. Tiles are wider than the
+    candidate regions and overlap their neighbours, so the search stays
+    within radius metres of the centre.
+    1. On a 20 m copy of the tile keep local high points (prominence against
+       a 3 km mean) where the slope is at most max_slope. The centre itself
+       is always a candidate.
+    2. Rank the candidates with a coarse horizon (2 deg rays) and the mean
+       visible fraction of the Sun over one year, 2 m above ground. Re-score
+       the best twelve and the centre with 0.5 deg rays.
+    3. Refine the top three and the centre on a 10 m grid and keep the best.
+       Light changes over tens of metres here, so this step matters.
+    Returns lat, lon, slope_deg, offset_km from the centre, candidates tried.
     """
     k = 4
     H = np.asarray(tile.a[::k, ::k], dtype=np.float64)
@@ -107,36 +116,43 @@ def find_best_site(tile, sources, sun, n_cand=240, margin=1500.0, max_slope=12.0
     Hf = np.where(np.isnan(H), np.nanmin(H), H)
     prom = Hf - ndi.uniform_filter(Hf, size=int(3000 / s) | 1, mode="nearest")
     gy, gx = np.gradient(Hf, s)
-    slope = ndi.maximum_filter(np.degrees(np.arctan(np.hypot(gx, gy))), size=3)
-    ok = (prom == ndi.maximum_filter(prom, size=7)) & (slope <= max_slope) & ~np.isnan(H)
-    m = int(margin / s)
-    ok[:m, :] = ok[-m:, :] = False
-    ok[:, :m] = ok[:, -m:] = False
+    slope = np.degrees(np.arctan(np.hypot(gx, gy)))
+    cx = tile.x0 + (tile.nc - 1) * tile.s / 2.0
+    cy = tile.y0 - (tile.nr - 1) * tile.s / 2.0
+    cols = tile.x0 + np.arange(H.shape[1]) * s
+    rows = tile.y0 - np.arange(H.shape[0]) * s
+    near = np.hypot(cols[None, :] - cx, rows[:, None] - cy) <= radius
+    ok = (prom == ndi.maximum_filter(prom, size=5)) & (slope <= max_slope) & ~np.isnan(H) & near
     rr, cc = np.nonzero(ok)
     order = np.argsort(-prom[rr, cc])[:n_cand]
-    best = (-1.0, 0.0, 0.0)
-    for r, c in zip(rr[order], cc[order]):
-        x, y = tile.x0 + c * s, tile.y0 - r * s
+    cand = [(tile.x0 + c * s, tile.y0 - r * s) for r, c in zip(rr[order], cc[order])]
+    cand.append((cx, cy))
+
+    def score(x, y, az_n, k_step, strips):
         lat, lon = xy_to_ll(x, y)
-        hp = horizon_profile(lat, lon, [2.0], sources, az_n=360, base_px=20.0, layers=False)
-        f = sun_fraction(sun, lat, lon, hp["h0"] + 2.0, hp["elev"][0], strips=8).mean()
-        if f > best[0]:
-            best = (f, x, y)
-    _, bx, by = best
-    ref = (-1.0, bx, by)
-    for dx in (-20, -10, 0, 10, 20):
-        for dy in (-20, -10, 0, 10, 20):
-            x, y = bx + dx, by + dy
-            ri, ci = int(round((tile.y0 - y) / s)), int(round((x - tile.x0) / s))
-            if slope[ri, ci] > max_slope:
-                continue
-            lat, lon = xy_to_ll(x, y)
-            hp = horizon_profile(lat, lon, [2.0], sources, az_n=720, base_px=5.0, layers=False)
-            f = sun_fraction(sun, lat, lon, hp["h0"] + 2.0, hp["elev"][0]).mean()
-            if f > ref[0]:
-                ref = (f, x, y)
+        hp = horizon_profile(lat, lon, [2.0], sources, az_n=az_n, base_px=5.0, k_step=k_step, layers=False)
+        return float(sun_fraction(sun, lat, lon, hp["h0"] + 2.0, hp["elev"][0], strips=strips).mean())
+
+    coarse = sorted(((score(x, y, 180, 1.0 / 80.0, 8), x, y) for x, y in cand), key=lambda t: -t[0])
+    short = [(x, y) for _, x, y in coarse[:12]] + [(cx, cy)]
+    fine = sorted(((score(x, y, 720, 1.0 / 300.0, 16), x, y) for x, y in short), key=lambda t: -t[0])
+    seeds = [(x, y) for _, x, y in fine[:3]]
+    if (cx, cy) not in seeds:
+        seeds.append((cx, cy))
+    ref = fine[0]
+    for bx, by in seeds:
+        for dx in (-20, -10, 0, 10, 20):
+            for dy in (-20, -10, 0, 10, 20):
+                x, y = bx + dx, by + dy
+                ri, ci = int(round((tile.y0 - y) / s)), int(round((x - tile.x0) / s))
+                if slope[ri, ci] > max_slope or np.hypot(x - cx, y - cy) > radius:
+                    continue
+                f = score(x, y, 720, 1.0 / 300.0, 16)
+                if f > ref[0]:
+                    ref = (f, x, y)
     lat, lon = xy_to_ll(ref[1], ref[2])
-    return float(lat), float(lon), len(order)
+    ri, ci = int(round((tile.y0 - ref[2]) / s)), int(round((ref[1] - tile.x0) / s))
+    return float(lat), float(lon), float(slope[ri, ci]), float(np.hypot(ref[1] - cx, ref[2] - cy) / 1000.0), len(cand)
 
 
 def longest_run_days(mask, step_h):
@@ -154,8 +170,8 @@ def main():
         sp.furnsh(f"{raw}/kernels/{k}")
     g20 = open_lola(f"{raw}/lola/ldem_80s_20m.img", 30400, 20.0)
     g240 = open_lola(f"{raw}/lola/ldem_60s_240m.img", 7760, 240.0)
-    S80 = Source(g20, 9, f"{raw}/cache/ldem80s")
-    S60 = Source(g240, 5, f"{raw}/cache/ldem60s")
+    S80 = Source(g20, 10, f"{raw}/cache/ldem80s")
+    S60 = Source(g240, 6, f"{raw}/cache/ldem60s")
 
     # one year for the search (3 h) and for the summary stats (1 h)
     et27 = sp.str2et("2027-01-01T00:00:00")
@@ -207,22 +223,23 @@ def main():
             continue
         t0 = time.time()
         tile = open_site_tif(path)
-        S5 = Source(tile, 5)
+        S5 = Source(tile, 6)
         tiles[tile_name] = S5
-        lat, lon, ncand = find_best_site(tile, [S5, S80, S60], sun3)
-        print(f"  search {tile_name}: {ncand} candidates, {time.time() - t0:.0f}s", flush=True)
-        add_site(sid, name, A3, lat, lon, note, f"Best-lit gentle spot found by this project in the PGDA 5 m DEM tile {tile_name}",
-                 "lola5", [S5, S80, S60], {"artemis2024": short24, "tile": tile_name})
+        lat, lon, slope, off, ncand = find_best_site(tile, [S5, S80, S60], sun3)
+        print(f"  search {tile_name}: {ncand} candidates, slope {slope:.1f} deg, {off:.2f} km from centre, {time.time() - t0:.0f}s", flush=True)
+        add_site(sid, name, A3, lat, lon, note,
+                 f"Best-lit spot with slope under 10 deg within 6 km of the published site centre, found by this project in the PGDA 5 m DEM tile {tile_name}",
+                 "lola5", [S5, S80, S60], {"artemis2024": short24, "tile": tile_name, "slope_deg": round(slope, 1), "offset_km": round(off, 2)})
 
     for sid, name, group, lat, lon, note, source in FIXED:
-        x, y = ll_to_xy(lat, lon) if lat < -55 else (1e12, 1e12)
         srcs, tier = None, "sphere"
         if lat < -55:
-            x, y = float(x), float(y)
-            in5 = [s for s in tiles.values() if s.inside(np.array([x]), np.array([y]))[0]]
-            if S80.inside(np.array([x]), np.array([y]))[0] and lat <= -80.0:
+            x, y = ll_to_xy(lat, lon)
+            x, y = np.array([float(x)]), np.array([float(y)])
+            in5 = [s for s in tiles.values() if s.inside(x, y)[0]]
+            if S80.inside(x, y)[0] and lat <= -80.0:
                 srcs, tier = in5 + [S80, S60], ("lola5" if in5 else "lola20")
-            elif S60.inside(np.array([x]), np.array([y]))[0] and lat <= -60.0:
+            elif S60.inside(x, y)[0] and lat <= -60.0:
                 srcs, tier = [S60], "lola240"
         add_site(sid, name, group, lat, lon, note, source, tier, srcs)
 

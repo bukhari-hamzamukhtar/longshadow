@@ -18,6 +18,8 @@ import json
 import os
 import sys
 
+sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
+
 import numpy as np
 from PIL import Image
 
